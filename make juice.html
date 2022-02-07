@@ -576,7 +576,7 @@ scUtils.createFontSizeBtn();</script><tw-passagedata pid="1" name="startPage" ta
 		&lt;&lt;if $seconds gt 0&gt;&gt;
 			&lt;&lt;replace &quot;#countdown&quot;&gt;&gt; $seconds&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;replace &quot;#countdown&quot;&gt;&gt;[[ &quot;лампочка&quot; |help0]]&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;replace &quot;#countdown&quot;&gt;&gt;[[ &#39;лампочка&#39; |help0]]&lt;&lt;/replace&gt;&gt;
 			/* do something useful here */
 			&lt;&lt;stop&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -601,9 +601,9 @@ scUtils.createFontSizeBtn();</script><tw-passagedata pid="1" name="startPage" ta
 Меню:
 копилка
 &lt;&lt;if $raspberries === false&gt;&gt;\
-	 Контур ягоды малины\
+	 ==Контур ягоды малины==\
 &lt;&lt;else&gt;&gt;\
-	Ягода малины\
+	&#39;&#39;Ягода малины&#39;&#39;\
 &lt;&lt;/if&gt;&gt;\
 
 
@@ -634,15 +634,19 @@ scUtils.createFontSizeBtn();</script><tw-passagedata pid="1" name="startPage" ta
 &lt;&lt;/silently&gt;&gt;
 
 Графика:
-Кусты с малиной у одного качается веточка.
-[[веточка|raspberries][$raspberries = true]]
+Кусты с малиной.
+&lt;&lt;if $raspberries === false&gt;&gt;\
+	[[На одном качатеся веточка.|raspberries][$raspberries = true]]
+&lt;&lt;else&gt;&gt;\
+	Застывшая веточка
+&lt;&lt;/if&gt;&gt;\
 
 Меню:
 копилка
 &lt;&lt;if $raspberries === false&gt;&gt;\
-	Контур ягоды малины\
+	==Контур ягоды малины==\
 &lt;&lt;else&gt;&gt;\
-	Ягода малины\
+	&#39;&#39;Ягода малины&#39;&#39;\
 &lt;&lt;/if&gt;&gt;\
 
 [[назад|kaleyard]]
@@ -662,7 +666,7 @@ scUtils.createFontSizeBtn();</script><tw-passagedata pid="1" name="startPage" ta
 
 Действия:
 При наличии лейки в копилке
-Нажать кнопки в правильном порядке лейка менятеся на наполненую на локации и в копилке(дном к низу и пузатая от наполненной воды)</tw-passagedata><tw-passagedata pid="6" name="box" tags="" position="617,516" size="100,100">[[Подсказка&quot;лампочка&quot;|help0]]
+Нажать кнопки в правильном порядке лейка менятеся на наполненую на локации и в копилке(дном к низу и пузатая от наполненной воды)</tw-passagedata><tw-passagedata pid="6" name="box" tags="" position="617,516" size="100,100">[[Подсказка &#39;лампочка&#39; |help0]]
 если в течении 30 секунд ничего не происходит, то кнопка подсказки подствечивается
 
 Графика:
