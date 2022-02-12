@@ -114,11 +114,9 @@ p {
 
 </style><script role="script" id="twine-user-script" type="text/twine-javascript"></script><tw-passagedata pid="1" name="start" tags="test" position="873,395" size="100,100">
 рисунок с правилами
-[img[drawings/go.gif][level1]]
-
-&lt;&lt;set $scope=0&gt;&gt;
-&lt;&lt;set $pose=4&gt;&gt;
-[[test]]</tw-passagedata><tw-passagedata pid="2" name="level1" tags="test" position="866,543" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;
+&lt;&lt;set $scope=0&gt;&gt;\
+&lt;&lt;set $pose=4&gt;&gt;\
+&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="2" name="level1" tags="test" position="866,543" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;
 &lt;&lt;set $badMashrums= random(2)&gt;&gt;
 &lt;&lt;if $goodMashrums === $badMashrums&gt;&gt;\
 	&lt;&lt;set $badMashrums = 3&gt;&gt;\
@@ -131,7 +129,7 @@ p {
 &lt;p align=&quot;right&quot;&gt;счет &lt;&lt;print $scope&gt;&gt;&lt;/p&gt;
 Тучка из которой капает дождик
 &lt;&lt;mushroom 0&gt;&gt;&lt;&lt;hedgehog&gt;&gt;&lt;&lt;mushroom 1&gt;&gt;
-&lt;&lt;mushroom 2&gt;&gt;&lt;img src=&quot;drawings/ground.png&quot; width=33%&gt;&lt;&lt;mushroom 3&gt;&gt;\
+&lt;&lt;mushroom 2&gt;&gt;&lt;img src=&quot;drawings/ground.png&quot; width=25%&gt;&lt;&lt;mushroom 3&gt;&gt;\
 </tw-passagedata><tw-passagedata pid="3" name="level2" tags="" position="1002,703" size="100,100">Вы выиграли!
 
 &lt;a data-passage=&quot;start&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="4" name="GameOwer" tags="" position="715,706" size="100,100">&lt;&lt;set $scope--&gt;&gt;
@@ -141,32 +139,32 @@ p {
 &lt;&lt;timed 5s&gt;&gt;&lt;&lt;goto [[GameOwer]]&gt;&gt;&lt;&lt;set $gameOver=true&gt;&gt;&lt;&lt;/timed&gt;&gt;\
 Вы проиграли счет &lt;&lt;print $scope&gt;&gt;
 &lt;img src=&quot;drawings/hedgehog_finish.svg&quot; alt=&quot;ежик&quot; width=33%&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="5" name="test" tags="test" position="1082,403" size="100,100">&lt;img src=&quot;drawings/wallpaper.svg&quot; alt=&quot;test&quot;&gt;</tw-passagedata><tw-passagedata pid="6" name="widget-hedgehog" tags="widget" position="1300,403" size="100,100">&lt;&lt;widget &quot;hedgehog&quot;&gt;&gt;\
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="5" name="widget-hedgehog" tags="widget" position="1300,403" size="100,100">&lt;&lt;widget &quot;hedgehog&quot;&gt;&gt;\
 &lt;&lt;if $pose === 4&gt;&gt;\
-	&lt;img src=&quot;drawings/hedgehog_start.svg&quot; alt=&quot;ежик&quot; width=33%&gt;\
+	&lt;img src=&quot;drawings/hedgehog_start.svg&quot; alt=&quot;ежик&quot; width=25%&gt;\
 &lt;&lt;elseif $pose === 1&gt;&gt;\
-	&lt;img src=&quot;drawings/hedgehog_right_up.svg&quot; alt=&quot;ежик&quot; width=33%&gt;\
+	&lt;img src=&quot;drawings/hedgehog_right_up.svg&quot; alt=&quot;ежик&quot; width=25%&gt;\
 &lt;&lt;elseif $pose === 0&gt;&gt;\
-	&lt;img src=&quot;drawings/hedgehog_left_up.svg&quot; alt=&quot;ежик&quot; width=33%&gt;\
+	&lt;img src=&quot;drawings/hedgehog_left_up.svg&quot; alt=&quot;ежик&quot; width=25%&gt;\
 &lt;&lt;elseif $pose === 3&gt;&gt;\
-	&lt;img src=&quot;drawings/hedgehog_right_down.svg&quot; alt=&quot;ежик&quot; width=33%&gt;\
+	&lt;img src=&quot;drawings/hedgehog_right_down.svg&quot; alt=&quot;ежик&quot; width=25%&gt;\
 &lt;&lt;else&gt;&gt;\
-	&lt;img src=&quot;drawings/hedgehog_left_down.svg&quot; alt=&quot;ежик&quot; width=33%&gt;\
+	&lt;img src=&quot;drawings/hedgehog_left_down.svg&quot; alt=&quot;ежик&quot; width=25%&gt;\
 &lt;&lt;/if&gt;&gt;\
-&lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="7" name="widget-mushroom" tags="widget" position="1301,600" size="100,100">&lt;&lt;widget &quot;mushroom&quot;&gt;&gt;\
+&lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="6" name="widget-mushroom" tags="widget" position="1301,600" size="100,100">&lt;&lt;widget &quot;mushroom&quot;&gt;&gt;\
 	&lt;&lt;set _corner = $args[0]&gt;&gt;\
 &lt;&lt;if $goodMashrums === _corner&gt;&gt;\
 	&lt;&lt;if $scope === 10&gt;&gt;\
-	  &lt;a data-passage=&quot;level2&quot;&gt;&lt;img src=&quot;drawings/good.gif&quot; width=33%&gt;&lt;/a&gt;\
+	  &lt;a data-passage=&quot;level2&quot;&gt;&lt;img src=&quot;drawings/good.gif&quot; width=25%&gt;&lt;/a&gt;\
 	&lt;&lt;else&gt;&gt;\
-		&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/good.gif&quot; width=33%&gt;&lt;&lt;set $scope = $scope+1
+		&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/good.gif&quot; width=25%&gt;&lt;&lt;set $scope = $scope+1
 $pose = _corner&gt;&gt;&lt;/a&gt;\
 	&lt;&lt;/if&gt;&gt; \
 &lt;&lt;else&gt;&gt;\
 	&lt;&lt;if $badMashrums === _corner&gt;&gt;\
-		&lt;a data-passage=&quot;GameOwer&quot;&gt;&lt;img src=&quot;drawings/bad.gif&quot; width=33%&gt;&lt;/a&gt;\
+		&lt;a data-passage=&quot;GameOwer&quot;&gt;&lt;img src=&quot;drawings/bad.gif&quot; width=25%&gt;&lt;/a&gt;\
 	&lt;&lt;else&gt;&gt;\
-		  &lt;img src=&quot;drawings/ground.png&quot; width=33%&gt;\
+		  &lt;img src=&quot;drawings/ground.png&quot; width=25%&gt;\
 	&lt;&lt;/if&gt;&gt; \
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;/widget&gt;&gt;\</tw-passagedata></tw-storydata>
