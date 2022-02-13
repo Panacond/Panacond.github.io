@@ -116,8 +116,8 @@ p {
 рисунок с правилами
 &lt;&lt;set $scope=0&gt;&gt;\
 &lt;&lt;set $pose=4&gt;&gt;\
-&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="2" name="level1" tags="test" position="877,510" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;
-&lt;&lt;set $badMashrums= random(2)&gt;&gt;
+&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="2" name="level1" tags="test" position="877,510" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
+&lt;&lt;set $badMashrums= random(2)&gt;&gt;\
 &lt;&lt;if $goodMashrums === $badMashrums&gt;&gt;\
 	&lt;&lt;set $badMashrums = 3&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
@@ -126,12 +126,12 @@ p {
 &lt;&lt;else&gt;&gt;\
 &lt;&lt;timed 5s&gt;&gt;&lt;&lt;goto [[level1]]&gt;&gt;&lt;&lt;/timed&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
-&lt;p align=&quot;right&quot;&gt;счет &lt;&lt;print $scope&gt;&gt;&lt;/p&gt;
+счет &lt;&lt;print $scope&gt;&gt;
 Тучка из которой капает дождик
 &lt;&lt;mushroom 0&gt;&gt;&lt;&lt;hedgehog&gt;&gt;&lt;&lt;mushroom 1&gt;&gt;
 &lt;&lt;mushroom 2&gt;&gt;&lt;img src=&quot;drawings/ground.png&quot; alt=&quot;ground&quot; width=30%&gt;&lt;&lt;mushroom 3&gt;&gt;\
-</tw-passagedata><tw-passagedata pid="3" name="level2" tags="test" position="880,653" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;
-&lt;&lt;set $badMashrums= random(2)&gt;&gt;
+</tw-passagedata><tw-passagedata pid="3" name="level2" tags="test" position="880,653" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
+&lt;&lt;set $badMashrums= random(2)&gt;&gt;\
 &lt;&lt;if $goodMashrums === $badMashrums&gt;&gt;\
 	&lt;&lt;set $badMashrums = 3&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
@@ -140,7 +140,7 @@ p {
 &lt;&lt;else&gt;&gt;\
 &lt;&lt;timed 20s&gt;&gt;&lt;&lt;goto [[level2]]&gt;&gt;&lt;&lt;/timed&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
-&lt;p align=&quot;right&quot;&gt;счет &lt;&lt;print $scope&gt;&gt;&lt;/p&gt;
+счет &lt;&lt;print $scope&gt;&gt;
 Тучка из которой капает дождик
 &lt;&lt;mushroom2 0&gt;&gt;&lt;&lt;mushroom2 1&gt;&gt;
 &lt;&lt;hedgehog2 0&gt;&gt;&lt;&lt;hedgehog2 1&gt;&gt;
