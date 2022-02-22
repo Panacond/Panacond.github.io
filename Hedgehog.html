@@ -100,23 +100,12 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 	</div>
 	<tw-storydata name="Hedgehog" startnode="1" creator="Twine" creator-version="2.3.16" ifid="403146FB-805C-43F8-AB88-9D2A7C5FB740" zoom="1" format="SugarCube" format-version="2.36.1" options="" hidden><style role="stylesheet" id="twine-user-stylesheet" type="text/twine-css">body[data-tags~="test"] {background-image:url("drawings/wallpaper.svg");background-size:cover;}
 
-a {
-  width: 10%;
-  height: 10%; 
-  max-width 30%;
-}
-p {
-    width: 10%;
-  height: 10%;
-   color: red;
-  max-width 30%;
-}
+body[data-tags~="wallpaper"] {background-image:url("drawings/wallpaper.svg");background-size:cover;}
 
-</style><script role="script" id="twine-user-script" type="text/twine-javascript"></script><tw-passagedata pid="1" name="start" tags="test" position="884,372" size="100,100">
-рисунок с правилами
+body[data-tags~="home"] {background-image:url("drawings/home.svg");background-size:cover;}</style><script role="script" id="twine-user-script" type="text/twine-javascript"></script><tw-passagedata pid="1" name="start" tags="wallpaper" position="884,372" size="100,100">&lt;img src=&quot;drawings/rules.svg&quot; width=80%&gt;
 &lt;&lt;set $scope=0&gt;&gt;\
 &lt;&lt;set $pose=4&gt;&gt;\
-&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="2" name="level1" tags="test" position="877,510" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
+&lt;a data-passage=&quot;level1&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="2" name="level1" tags="wallpaper" position="877,510" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
 &lt;&lt;set $badMashrums= random(2)&gt;&gt;\
 &lt;&lt;if $goodMashrums === $badMashrums&gt;&gt;\
 	&lt;&lt;set $badMashrums = 3&gt;&gt;\
@@ -126,11 +115,11 @@ p {
 &lt;&lt;else&gt;&gt;\
 &lt;&lt;timed 5s&gt;&gt;&lt;&lt;goto [[level1]]&gt;&gt;&lt;&lt;/timed&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
-счет &lt;&lt;print $scope&gt;&gt;
-Тучка из которой капает дождик
+Scope &lt;&lt;print $scope&gt;&gt; Level 1
+&lt;img src=&quot;drawings/rain.gif&quot; width=75%&gt;
 &lt;&lt;mushroom 0&gt;&gt;&lt;&lt;hedgehog&gt;&gt;&lt;&lt;mushroom 1&gt;&gt;
-&lt;&lt;mushroom 2&gt;&gt;&lt;img src=&quot;drawings/ground.png&quot; alt=&quot;ground&quot; width=30%&gt;&lt;&lt;mushroom 3&gt;&gt;\
-</tw-passagedata><tw-passagedata pid="3" name="level2" tags="test" position="880,653" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
+&lt;&lt;mushroom 2&gt;&gt;&lt;img src=&quot;drawings/ground.svg&quot; alt=&quot;ground&quot; width=30%&gt;&lt;&lt;mushroom 3&gt;&gt;\
+</tw-passagedata><tw-passagedata pid="3" name="level2" tags="wallpaper" position="880,653" size="100,100">&lt;&lt;set $goodMashrums= random(3)&gt;&gt;\
 &lt;&lt;set $badMashrums= random(2)&gt;&gt;\
 &lt;&lt;if $goodMashrums === $badMashrums&gt;&gt;\
 	&lt;&lt;set $badMashrums = 3&gt;&gt;\
@@ -140,18 +129,16 @@ p {
 &lt;&lt;else&gt;&gt;\
 &lt;&lt;timed 20s&gt;&gt;&lt;&lt;goto [[level2]]&gt;&gt;&lt;&lt;/timed&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
-счет &lt;&lt;print $scope&gt;&gt;
-Тучка из которой капает дождик
-&lt;&lt;mushroom2 0&gt;&gt;&lt;&lt;mushroom2 1&gt;&gt;
-&lt;&lt;hedgehog2 0&gt;&gt;&lt;&lt;hedgehog2 1&gt;&gt;
-&lt;&lt;mushroom2 2&gt;&gt;&lt;&lt;mushroom2 3&gt;&gt;
-&lt;&lt;hedgehog2 2&gt;&gt;&lt;&lt;hedgehog2 3&gt;&gt;
-</tw-passagedata><tw-passagedata pid="4" name="GameOwer" tags="" position="665,586" size="100,100">&lt;&lt;set $scope--&gt;&gt;\
-Ваш счет &lt;&lt;print $scope&gt;&gt;
-&lt;a id=&quot;drink&quot;&gt;&lt;img src=&quot;drawings/hedgehog_finish.svg&quot; alt=&quot;ежик&quot; width=33%&gt;
-&lt;/a&gt;
+Scope &lt;&lt;print $scope&gt;&gt; Level 2
+&lt;img src=&quot;drawings/rain.gif&quot; width=75%&gt;
+&lt;&lt;mushroom2 0&gt;&gt;&lt;&lt;mushroom2 1&gt;&gt;&lt;&lt;mushroom2 2&gt;&gt;
+&lt;&lt;hedgehog2 0&gt;&gt;&lt;&lt;hedgehog2 1&gt;&gt;&lt;&lt;hedgehog2 2&gt;&gt;
+&lt;&lt;mushroom2 3&gt;&gt;&lt;&lt;mushroom2 4&gt;&gt;&lt;&lt;mushroom2 5&gt;&gt;
+&lt;&lt;hedgehog2 3&gt;&gt;&lt;&lt;hedgehog2 4&gt;&gt;&lt;&lt;hedgehog2 5&gt;&gt;
+</tw-passagedata><tw-passagedata pid="4" name="GameOwer" tags="wallpaper" position="665,586" size="100,100">&lt;&lt;set $scope--&gt;&gt;\
+Scope &lt;&lt;print $scope&gt;&gt;
+&lt;a id=&quot;drink&quot;&gt;&lt;img src=&quot;drawings/hedgehog_finish.svg&quot; alt=&quot;ежик&quot; width=33%&gt;&lt;/a&gt;
 &lt;&lt;timed 5s&gt;&gt;&lt;&lt;replace &quot;#drink&quot;&gt;&gt;\
-Попробуйте выиграть
 &lt;a data-passage=&quot;start&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\
 &lt;&lt;/replace&gt;&gt;\
 &lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="5" name="widget-hedgehog" tags="widget" position="1300,403" size="100,100">&lt;&lt;widget &quot;hedgehog&quot;&gt;&gt;\
@@ -179,29 +166,31 @@ $pose = _corner&gt;&gt;&lt;/a&gt;\
 	&lt;&lt;if $badMashrums === _corner&gt;&gt;\
 		&lt;a data-passage=&quot;GameOwer&quot;&gt;&lt;img src=&quot;drawings/bad.gif&quot; alt=&quot;bad&quot; width=30%&gt;&lt;/a&gt;\
 	&lt;&lt;else&gt;&gt;\
-		  &lt;img src=&quot;drawings/ground.png&quot; alt=&quot;ground&quot; width=30%&gt;\
+		  &lt;img src=&quot;drawings/ground.svg&quot; alt=&quot;ground&quot; width=30%&gt;\
 	&lt;&lt;/if&gt;&gt; \
 &lt;&lt;/if&gt;&gt;\
-&lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="7" name="level3" tags="" position="878,794" size="100,100">Вы выиграли!
+&lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="7" name="level3" tags="wallpaper" position="878,794" size="100,100">&lt;img src=&quot;drawings/home_one.svg&quot; width=90%&gt;
+&lt;a data-passage=&quot;start&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=30%&gt;&lt;/a&gt;\
+&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30%&gt;
+&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30%&gt;\
+&lt;img src=&quot;drawings/muchroom.svg&quot; width=30%&gt;\
+&lt;img src=&quot;drawings/muchroom.svg&quot; width=30%&gt;
+&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30%&gt;\
+&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30%&gt;
 
-&lt;a data-passage=&quot;start&quot;&gt;&lt;img src=&quot;drawings/go.gif&quot; width=33%&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="8" name="widget-hedgehog2" tags="widget" position="1408,404" size="100,100">&lt;&lt;widget &quot;hedgehog2&quot;&gt;&gt;\
+
+</tw-passagedata><tw-passagedata pid="8" name="widget-hedgehog2" tags="widget" position="1408,404" size="100,100">&lt;&lt;widget &quot;hedgehog2&quot;&gt;&gt;\
 	&lt;&lt;set _pose = $args[0]&gt;&gt;\
 &lt;&lt;if $pose === _pose&gt;&gt;\
-  &lt;&lt;if $pose === 2&gt;&gt;\
-  	 &lt;img src=&quot;drawings/hedgehog_left_down.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
-  &lt;&lt;elseif $pose === 1&gt;&gt;\
-	  &lt;img src=&quot;drawings/hedgehog_right_up.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
-  &lt;&lt;elseif $pose === 0&gt;&gt;\
-	  &lt;img src=&quot;drawings/hedgehog_left_up.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
-  &lt;&lt;elseif $pose === 3&gt;&gt;\
-	  &lt;img src=&quot;drawings/hedgehog_right_down.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
+  &lt;&lt;if $pose &lt; 0 &gt;&gt;\
+  	 &lt;img src=&quot;drawings/hedgehog_right_up.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
   &lt;&lt;else&gt;&gt;\
 	 &lt;img src=&quot;drawings/hedgehog_start.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
   &lt;&lt;/if&gt;&gt;\
-&lt;&lt;elseif $pose === 4 &amp;&amp; _pose===0 &gt;&gt;\
+&lt;&lt;elseif $pose === 0 &amp;&amp; _pose===0 &gt;&gt;\
 	&lt;img src=&quot;drawings/hedgehog_start.svg&quot; alt=&quot;ежик&quot; width=30%&gt;\
 &lt;&lt;else&gt;&gt;\
-	&lt;img src=&quot;drawings/ground.png&quot; alt=&quot;ground&quot; width=30%&gt;\
+	&lt;img src=&quot;drawings/ground.svg&quot; alt=&quot;ground&quot; width=30%&gt;\
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="9" name="widget-mushroom2" tags="widget" position="1406,601" size="100,100">&lt;&lt;widget &quot;mushroom2&quot;&gt;&gt;\
 	&lt;&lt;set _corner = $args[0]&gt;&gt;\
@@ -215,7 +204,7 @@ $pose = _corner&gt;&gt;&lt;/a&gt;\
 	&lt;&lt;if $badMashrums === _corner&gt;&gt;\
 		&lt;a data-passage=&quot;GameOwer&quot;&gt;&lt;img src=&quot;drawings/bad.gif&quot; alt=&quot;bad&quot; width=30%&gt;&lt;/a&gt;\
 	&lt;&lt;else&gt;&gt;\
-		  &lt;img src=&quot;drawings/ground.png&quot; alt=&quot;ground&quot; width=30%&gt;\
+		  &lt;img src=&quot;drawings/ground.svg&quot; alt=&quot;ground&quot; width=30%&gt;\
 	&lt;&lt;/if&gt;&gt; \
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;/widget&gt;&gt;\</tw-passagedata></tw-storydata>
