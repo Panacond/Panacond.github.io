@@ -120,7 +120,8 @@ p {text-align: center;}</style><script role="script" id="twine-user-script" type
 &lt;img src=&quot;drawings/muchroom.svg&quot; width=30% alt=&quot;muchroom&quot;&gt;\
 &lt;img src=&quot;drawings/muchroom.svg&quot; width=30% alt=&quot;muchroom&quot;&gt;
 &lt;img src=&quot;drawings/muchrooms.svg&quot; width=30% alt=&quot;muchrooms&quot;&gt;\
-&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30% alt=&quot;muchrooms&quot;&gt;</tw-passagedata><tw-passagedata pid="5" name="widget-mushroom2" tags="widget" position="803,600" size="100,100">&lt;&lt;widget &quot;mushroom2&quot;&gt;&gt;\
+&lt;img src=&quot;drawings/muchrooms.svg&quot; width=30% alt=&quot;muchrooms&quot;&gt;\
+&lt;a data-passage=&quot;start1&quot;&gt;&lt;img src=&quot;drawings/restart.gif&quot; width=30% alt=&quot;restart&quot;&gt;&lt;/a&gt;\</tw-passagedata><tw-passagedata pid="5" name="widget-mushroom2" tags="widget" position="803,600" size="100,100">&lt;&lt;widget &quot;mushroom2&quot;&gt;&gt;\
 	&lt;&lt;set _corner = $args[0]&gt;&gt;\
 	&lt;&lt;set $randomGood = random(1, 8)&gt;&gt;\
 &lt;&lt;if $goodMashrums === _corner&gt;&gt;\
@@ -155,14 +156,14 @@ p {text-align: center;}</style><script role="script" id="twine-user-script" type
 	&lt;&lt;set $badMashrums = $level&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;if $goodMashrums !== $pose&gt;&gt;\
-&lt;&lt;timed 40s&gt;&gt;&lt;&lt;goto &quot;GameOwer&quot;&gt;&gt; &lt;&lt;/timed&gt;&gt;\
+&lt;&lt;timed 5s&gt;&gt;&lt;&lt;goto &quot;GameOwer&quot;&gt;&gt; &lt;&lt;/timed&gt;&gt;\
 &lt;&lt;else&gt;&gt;\
-&lt;&lt;timed 40s&gt;&gt;&lt;&lt;goto &lt;a data-passage=$Golevel&gt;_&lt;/a&gt; &gt;&gt; &lt;&lt;/timed&gt;&gt;\
+&lt;&lt;timed 5s&gt;&gt;&lt;&lt;goto &lt;a data-passage=$Golevel&gt;_&lt;/a&gt; &gt;&gt; &lt;&lt;/timed&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;if $rainbow ===0&gt;&gt;\
 &lt;img src=&quot;drawings/rain.gif&quot; alt=&quot;simple rain&quot; width=75%&gt;\
 &lt;&lt;else&gt;&gt;\
-&lt;img src=&quot;drawings/cloud_rainbow.gif&quot; alt=&quot;rainbow&quot; width=75%&gt;&lt;&lt;timed 3s&gt;&gt;&lt;&lt;set $rainbow=0&gt;&gt;&lt;&lt;/timed&gt;&gt;\
+&lt;img src=&quot;drawings/cloud_rainbow.gif&quot; alt=&quot;rainbow&quot; width=75%&gt;&lt;&lt;set $rainbow=0&gt;&gt;\
 &lt;&lt;/if&gt;&gt;\
 &lt;&lt;/widget&gt;&gt;\</tw-passagedata><tw-passagedata pid="7" name="level3" tags="wallpaper" position="617,407" size="100,100">&lt;&lt;title&gt;&gt;
 &lt;&lt;mushroom2 1&gt;&gt;&lt;&lt;mushroom2 2&gt;&gt;&lt;&lt;mushroom2 3&gt;&gt;
