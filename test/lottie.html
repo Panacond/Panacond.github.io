@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lottie Animation Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/lottie-web@5.7.13/build/player/lottie.min.js"></script>
+  <style>
+    #lottie-container {
+      width: 500px;
+      height: 500px;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lottie-container"></div>
+
+  <script>
+    window.onload = function() {
+      var animation = lottie.loadAnimation({
+        container: document.getElementById('lottie-container'), // ID контейнера
+        renderer: 'svg', // или 'canvas'
+        loop: true, // Анимация будет повторяться
+        autoplay: true, // Запуск анимации сразу
+        path: './Synfig.json' // Пример URL анимации Lottie
+      });
+    };
+  </script>
+
+</body>
+</html>
