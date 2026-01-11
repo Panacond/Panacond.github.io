@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Розподіл витрат</title>
+    <style>
+        * { box-sizing: border-box; } /* Чтобы паддинги не расширяли элементы */
+        
+        body { font-family: "Segoe UI", sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        
+        .card { background: white; padding: 15px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); width: 100%; max-width: 480px; }
+        
+        h2 { text-align: center; color: #1a73e8; margin: 10px 0 20px 0; font-size: 1.5rem; }
+        
+        .input-group { margin-bottom: 10px; display: flex; gap: 8px; align-items: center; width: 100%; }
+        
+        .name-input { flex: 2; min-width: 0; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 14px; }
+        
+        .amount-input { flex: 1.2; min-width: 0; padding: 10px; border: 2px solid #ddd; border-radius: 8px; text-align: right; font-size: 14px; }
+        
+        .btn-del { background: #fee2e2; color: #dc2626; border: none; border-radius: 8px; padding: 10px 12px; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        
+        .controls { margin: 15px 0; }
+        
+        .btn-add { background: #1a73e8; color: white; border: none; border-radius: 8px; padding: 12px; width: 100%; cursor: pointer; font-weight: bold; font-size: 16px; }
+        
+        .result-box { margin-top: 15px; padding-top: 15px; border-top: 2px solid #eee; }
+        
+        .total-info { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #1a73e8; font-size: 0.95rem; }
+        
+        .balance-info { font-size: 0.85rem; margin-bottom: 15px; color: #555; line-height: 1.4; }
+        
+        .transfer-list { background: #e6fffa; padding: 12px; border-radius: 8px; border-left: 4px solid #38a169; }
+        
+        .transfer-item { margin: 8px 0; font-size: 15px; color: #2d3748; word-wrap: break-word; }
+        
+        .arrow { color: #38a169; font-weight: bold; padding: 0 4px; }
+
+        h3 { font-size: 1.1rem; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Розподіл витрат</h2>
+
+        <div id="inputs-container"></div>
+
+        <div class="controls">
+            <button class="btn-add" onclick="addPerson()">+ Додати людину</button>
+        </div>
+
+        <div class="result-box" id="results"></div>
+    </div>
+
+    <script>
+        let peopleCount = 0;
+
+        const initialData = [
+            {name: "Богдан", val: 1500},
+            {name: "Микола", val: 800},
+            {name: "Олесь", val: 0},
+            {name: "Зоряна", val: 500}
+        ];
+
+        function addPerson(name = "", val = 0) {
+            const container = document.getElementById('inputs-container');
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.id = `group-${peopleCount}`;
+            div.innerHTML = `
+                <input type="text" class="name-input" value="${name}" placeholder="Ім'я" oninput="calculate()">
+                <input type="number" class="amount-input" value="${val}" placeholder="0" oninput="calculate()">
+                <button class="btn-del" onclick="removePerson(${peopleCount})">✕</button>
+            `;
+            container.appendChild(div);
+            peopleCount++;
+            calculate();
+        }
+
+        function removePerson(id) {
+            const el = document.getElementById(`group-${id}`);
+            if (el) el.remove();
+            calculate();
+        }
+
+        function calculate() {
+            const container = document.getElementById('inputs-container');
+            const groups = container.getElementsByClassName('input-group');
+            
+            let balances = [];
+            let total = 0;
+
+            for (let group of groups) {
+                let name = group.querySelector('.name-input').value || "Учасник";
+                let val = parseFloat(group.querySelector('.amount-input').value) || 0;
+                balances.push({ name: name, amount: val });
+                total += val;
+            }
+
+            if (balances.length === 0) {
+                document.getElementById("results").innerHTML = "";
+                return;
+            }
+
+            const average = total / balances.length;
+            let debtors = [];
+            let creditors = [];
+            let balanceDetails = "";
+
+            balances.forEach((person) => {
+                let diff = person.amount - average;
+                if (diff > 0.01) {
+                    creditors.push({ name: person.name, amount: diff });
+                    balanceDetails += `<div>${person.name}: +<span style="color:green">${diff.toFixed(2)}</span></div>`;
+                } else if (diff < -0.01) {
+                    debtors.push({ name: person.name, amount: Math.abs(diff) });
+                    balanceDetails += `<div>${person.name}: <span style="color:red">-${Math.abs(diff).toFixed(2)}</span></div>`;
+                }
+            });
+
+            let html = `
+                <div class="total-info">
+                    <strong>Всього:</strong> ${total.toFixed(2)} | 
+                    <strong>Середній чек:</strong> ${average.toFixed(2)}
+                </div>
+                <div class="balance-info">${balanceDetails}</div>
+                <h3>Кому куди переказувати:</h3>
+                <div class="transfer-list">
+            `;
+
+            let transfers = [];
+            let d_list = JSON.parse(JSON.stringify(debtors));
+            let c_list = JSON.parse(JSON.stringify(creditors));
+
+            let d = 0, c = 0;
+            while (d < d_list.length && c < c_list.length) {
+                let amount = Math.min(d_list[d].amount, c_list[c].amount);
+                if (amount > 0.01) {
+                    transfers.push(`<b>${d_list[d].name}</b> <span class="arrow">→</span> <b>${c_list[c].name}</b>: ${amount.toFixed(2)}`);
+                }
+                d_list[d].amount -= amount;
+                c_list[c].amount -= amount;
+                if (d_list[d].amount < 0.01) d++;
+                if (c_list[c].amount < 0.01) c++;
+            }
+
+            html += transfers.length ? transfers.map(t => `<div class="transfer-item">${t}</div>`).join('') : '<div class="transfer-item">Усі розрахувалися!</div>';
+            html += `</div>`;
+            document.getElementById("results").innerHTML = html;
+        }
+
+        initialData.forEach(p => addPerson(p.name, p.val));
+    </script>
+</body>
+</html>
