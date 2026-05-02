@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Thai City: Hall Stats</title>
+    <style>
+        :root {
+            --city: #3498db; --factory: #7f8c8d; --office: #e67e22;
+            --shop: #f1c40f; --grass: #2ecc71; --mountain: #5d4037;
+            --lake: #2980b9; --hall: #9b59b6; --park: #27ae60;
+        }
+        body { 
+            margin: 0; overflow: hidden; background: #000; 
+            font-family: 'Tahoma', sans-serif; color: white; touch-action: manipulation;
+            perspective: 1200px;
+        }
+
+        #container {
+            display: grid; height: 100vh; width: 100vw;
+            gap: 5px; padding: 10px; box-sizing: border-box;
+            transition: filter 0.5s ease, transform 1.5s ease-in-out, opacity 0.5s ease;
+            transform-origin: center center;
+            will-change: transform, filter;
+        }
+
+        @media (min-width: 768px) {
+            #container { grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr); }
+        }
+        @media (max-width: 767px) {
+            #container { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(8, 1fr); }
+        }
+
+        #transition-text {
+            position: fixed; top: 15%; width: 100%; text-align: center;
+            font-size: 7vmin; font-weight: bold; color: gold;
+            text-shadow: 2px 2px 15px rgba(0,0,0,1);
+            z-index: 10000; pointer-events: none;
+            min-height: 15vh;
+        }
+
+        .tile {
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; font-size: 6vmin; background: var(--grass); transition: 0.2s;
+            overflow: hidden;
+        }
+
+        .station-goals {
+            font-size: 4.5vmin; line-height: 1.1; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: #111; font-weight: bold;
+        }
+
+        .type-city { background: var(--city); }
+        .type-factory { background: var(--factory); }
+        .type-office { background: var(--office); }
+        .type-shop { background: var(--shop); }
+        .type-mountain { background: var(--mountain); cursor: default; }
+        .type-lake { background: var(--lake); cursor: default; }
+        .type-hall { background: var(--hall); border: 2px solid gold; flex-direction: column; }
+        .type-park { background: var(--park); }
+        .type-station-active { background: #fff; box-shadow: 0 0 30px gold; animation: bounce 1s infinite; }
+
+        #bus-wrap {
+            position: fixed; top: 35%; left: -250%; font-size: 45vmin;
+            z-index: 9999; pointer-events: none;
+            filter: drop-shadow(0 40px 60px rgba(0,0,0,0.9));
+        }
+        .mirror { transform: scaleX(-1); }
+
+        .city-zoom-out { 
+            transform: scale(4) rotateY(-30deg) translateZ(500px); 
+            filter: blur(15px); opacity: 0.3; 
+        }
+
+        #help-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 2000; padding: 30px; font-size: 4vmin; text-align: center;
+        }
+
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    </style>
+</head>
+<body>
+
+    <div id="transition-text"></div>
+
+    <div id="help-modal" onclick="this.style.display='none'">
+        <h2 style="color: gold;">📘 ГИД ПО СИНЕРГИИ (x8)</h2>
+        <p>🏠 + 💧💧 = <b style="color: #00ff00;">x8 Домов</b></p>
+        <p>🏭 + ⛰️⛰️ = <b style="color: #00ff00;">x8 Заводов</b></p>
+        <p>🏢 + 🏭🏭 = <b style="color: #00ff00;">x8 Офисов</b></p>
+        <p>🛒 + 🏠🏠 = <b style="color: #00ff00;">x8 Магазинов</b></p>
+        <hr style="width: 70%; opacity: 0.2; margin: 15px 0;">
+        <p style="color: #ff7675;">🏠 ↔ 🏭 / 🏭 ↔ 🛒 = 🌳 Парк</p>
+    </div>
+
+    <div id="bus-wrap">🚌</div>
+    <div id="container"></div>
+
+    <script>
+        const container = document.getElementById('container');
+        const busWrap = document.getElementById('bus-wrap');
+        const transText = document.getElementById('transition-text');
+        
+        let level = 1;
+        let totalClicks = 0;
+        let board = [], goals = {}, stationIdx = -1, isStationFound = false;
+        const totalTiles = 32;
+        const types = ['city', 'office', 'factory', 'shop'];
+        const emojis = { grass:'🌱', city:'🏠', factory:'🏭', office:'🏢', shop:'🛒', mountain:'⛰️', lake:'💧', hall:'🏛️', station:'🚌', park:'🌳' };
+
+        document.addEventListener('click', (e) => {
+            totalClicks++;
+            // Обновляем текст в ратуше при каждом клике по документу
+            const clickEl = document.getElementById('hall-clicks');
+            if(clickEl) clickEl.innerText = `C: ${totalClicks}`;
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        });
+
+        function initLevel() {
+            container.style.transition = 'none';
+            container.classList.remove('city-zoom-out');
+            transText.innerHTML = '';
+            busWrap.style.transition = 'none';
+            busWrap.style.left = '-250%';
+            
+            board = new Array(totalTiles).fill('grass');
+            isStationFound = false;
+            for(let i=0; i<3; i++) board[randEmpty()] = 'mountain';
+            for(let i=0; i<3; i++) board[randEmpty()] = 'lake';
+            board[randEmpty()] = 'hall';
+            stationIdx = randEmpty();
+            board[stationIdx] = 'hidden';
+            
+            goals = { city: 6 + level * 2, office: 2 + level, shop: 2 + level, factory: 2 + level };
+            render();
+            setTimeout(() => { 
+                container.style.transition = 'filter 0.5s ease, transform 1.5s ease-in-out, opacity 1s ease'; 
+            }, 100);
+        }
+
+        function randEmpty() {
+            let idx; do { idx = Math.floor(Math.random() * totalTiles); } while (board[idx] !== 'grass');
+            return idx;
+        }
+
+        function typeWriter(text, duration) {
+            const charTime = duration / text.length;
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    transText.innerHTML = text.substring(0, i + 1);
+                    i++;
+                } else { clearInterval(interval); }
+            }, charTime);
+        }
+
+        function calculatePower(idx, type) {
+            const isMobile = window.innerWidth < 768;
+            const cols = isMobile ? 4 : 8;
+            const nIndices = [idx-1, idx+1, idx-cols, idx+cols].filter(n => {
+                const isSide = (idx % cols === 0 && n === idx-1) || (idx % cols === (cols-1) && n === idx+1);
+                return n >=0 && n < totalTiles && !isSide;
+            });
+            const neighbors = nIndices.map(n => board[n]);
+            const near = (t) => neighbors.filter(x => x === t).length;
+
+            if (type === 'city' && near('factory') > 0) return { type: 'park', val: 0, former: 'city' };
+            if (type === 'factory' && near('shop') > 0) return { type: 'park', val: 0, former: 'factory' };
+
+            let val = 1;
+            if (type === 'city' && near('lake') >= 2) val = 8; else if (type === 'city' && near('lake') === 1) val = 4;
+            if (type === 'factory' && near('mountain') >= 2) val = 8; else if (type === 'factory' && near('mountain') === 1) val = 4;
+            if (type === 'office' && near('factory') >= 2) val = 8; else if (type === 'office' && near('factory') === 1) val = 4;
+            if (type === 'shop' && near('city') >= 2) val = 8; else if (type === 'shop' && near('city') === 1) val = 4;
+            return { type, val };
+        }
+
+        function render() {
+            container.innerHTML = '';
+            let stats = { city: 0, office: 0, factory: 0, shop: 0 };
+            board.forEach((cell, i) => {
+                if (types.includes(cell)) {
+                    const res = calculatePower(i, cell);
+                    if (res.type !== 'park') stats[res.type] += res.val;
+                }
+            });
+
+            const isGoalMet = stats.city >= goals.city && stats.office >= goals.office && stats.factory >= goals.factory && stats.shop >= goals.shop;
+
+            board.forEach((cell, i) => {
+                const tile = document.createElement('div');
+                if (types.includes(cell)) {
+                    const res = calculatePower(i, cell);
+                    tile.className = `tile type-${res.type}`;
+                    if (res.type === 'park') {
+                        tile.innerHTML = `${emojis.park}<div style="position:absolute;bottom:2px;font-size:2vmin;opacity:0.7;text-decoration:line-through;">${emojis[res.former]}</div>`;
+                    } else {
+                        tile.innerText = res.val === 8 ? emojis[res.type].repeat(4) + "\n" + emojis[res.type].repeat(4) : (res.val === 4 ? emojis[res.type].repeat(4) : emojis[res.type]);
+                        if(res.val >= 4) { tile.style.fontSize = '2.8vmin'; tile.style.whiteSpace = 'pre'; }
+                    }
+                } else {
+                    tile.className = `tile type-${cell}`;
+                    tile.innerText = emojis[cell] || '🌱';
+                }
+
+                if (cell === 'hall') {
+                    tile.innerHTML = `
+                        <div style="position:absolute;top:2px;right:5px;font-size:3vmin;color:gold;">?</div>
+                        <div style="font-size:5vmin">${emojis.hall}</div>
+                        <div style="font-size:2.2vmin">L: ${level}</div>
+                        <div id="hall-clicks" style="font-size:2.2vmin">C: ${totalClicks}</div>
+                    `;
+                    tile.onclick = (e) => { e.stopPropagation(); document.getElementById('help-modal').style.display = 'flex'; }
+                }
+
+                if (i === stationIdx) {
+                    if (!isStationFound) { tile.className = "tile"; tile.innerText = "🌱"; }
+                    else if (isGoalMet) { 
+                        tile.className = "tile type-station-active"; tile.innerText = "🚌"; 
+                        tile.onclick = (e) => { e.stopPropagation(); startJourney(); };
+                    } else {
+                        tile.innerHTML = `<div class="station-goals">
+                            <div style="color:${stats.city >= goals.city ? '#2ecc71':'#e74c3c'}">🏠${stats.city}/${goals.city}</div>
+                            <div style="color:${stats.office >= goals.office ? '#2ecc71':'#e74c3c'}">🏢${stats.office}/${goals.office}</div>
+                            <div style="color:${stats.factory >= goals.factory ? '#2ecc71':'#e74c3c'}">🏭${stats.factory}/${goals.factory}</div>
+                            <div style="color:${stats.shop >= goals.shop ? '#2ecc71':'#e74c3c'}">🛒${stats.shop}/${goals.shop}</div>
+                        </div>`;
+                    }
+                }
+
+                tile.addEventListener('click', (e) => {
+                    if (['mountain', 'lake', 'hall'].includes(board[i])) return;
+                    if (i === stationIdx) isStationFound = true;
+                    else {
+                        let curIdx = types.indexOf(board[i]);
+                        board[i] = curIdx === -1 ? types[Math.floor(Math.random()*4)] : types[(curIdx + 1) % 4];
+                    }
+                    render();
+                });
+                container.appendChild(tile);
+            });
+        }
+
+        function startJourney() {
+            const t = 1500;
+            container.classList.add('city-zoom-out');
+            busWrap.classList.add('mirror');
+            busWrap.style.transition = `left ${t}ms linear`;
+            busWrap.style.left = '150%';
+            typeWriter("СЛЕДУЮЩИЙ ГОРОД...", t);
+
+            setTimeout(() => {
+                busWrap.style.transition = 'none';
+                busWrap.style.left = '150%';
+                busWrap.classList.remove('mirror');
+                transText.innerHTML = "";
+                level++;
+                initLevel(); 
+                container.style.transition = 'none';
+                container.classList.add('city-zoom-out');
+                setTimeout(() => {
+                    container.style.transition = `filter 0.5s ease, transform ${t}ms ease-out, opacity 1s ease`;
+                    busWrap.style.transition = `left ${t}ms linear`;
+                    busWrap.style.left = '-250%';
+                    container.classList.remove('city-zoom-out');
+                }, 50);
+            }, t + 100);
+        }
+
+        window.addEventListener('resize', render);
+        initLevel();
+    </script>
+</body>
+</html>

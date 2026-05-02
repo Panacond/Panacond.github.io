@@ -1,227 +1,219 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <title>start</title>
-    <link
-      rel="force-svg"
-      href="http://berjon.com/blog/2009/07/force-svg.html"
-    />
-    <script type="application/javascript">
-      (function () {
-        function ForceSVGInHTML() {
-          window.removeEventListener("load", ForceSVGInHTML, true);
-          var svgs = document.getElementsByTagName("svg");
-          for (var i = 0; i < svgs.length; i++) {
-            var svg = svgs[i];
-            var div = document.createElement("div");
-            div.appendChild(svg.cloneNode(true));
-            var dom = new DOMParser().parseFromString(
-              div.innerHTML,
-              "application/xml"
-            );
-            svg.parentNode.replaceChild(
-              document.importNode(dom.documentElement, true),
-              svg
-            );
-          }
-        }
-        window.addEventListener("load", ForceSVGInHTML, true);
-      })();
-    </script>
-  </head>
+<html lang="uk">
 
-  <body>
-    <h1 style="text-align: center">
-      Эта страничка посвещена всевозможным приложениям работающим через браузер
-    </h1>
-    <table style="width: 100%" border="1">
-      <tbody>
-        <tr>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/dbn_calculation/" target="_top">
-              <img src="drawings/calc_dbn.png" alt="calc_dbn" width="100%" />
-              <br />Розрахунки за ДБН
-            </a>
-          </td>
-          <td style="text-align: center">
-            <a
-              href="https://panacond.github.io/Cutting_stock_problem/"
-              target="_top"
-            >
-              <img
-                src="./drawings/cutting_problem.png"
-                alt="cutting_problem"
-                width="100%"
-              />
-              <br />Просте рішення завдання розкрою
-            </a>
-          </td>
-        </tr>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мої веб-додатки</title>
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-color: #333;
+      --accent-color: #3498db;
+    }
 
-        <tr>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/quotes/" target="_top">
-              <img src="image/motivation.png" alt=" " width="100%" />
-              <br />Цитати</a
-            >
-          </td>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/counter_vue/" target="_top">
-              <img src="drawings/couner.png" alt="couner" width="100%" />
-              <br />Лічильник</a
-            >
-          </td>
-        </tr>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
 
-        <tr>
-          <td style="text-align: center">
-            <a href="./simple_pages/call back.html"
-              ><img src="drawings/img-callBack.svg" alt="call back" title="call back"
-            /></a>
-            <br />
-          </td>
-          <td style="text-align: center">
-            <a href="./simple_pages/calculation_beam.html" target="_top">
-              <img src="image/simple_beam_calc.svg" alt="простой расчет" />
-              <br />Расчет</a
-            >
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center">
-            <br />
-            <a href="simple_pages/lem.html"
-              ><img
-                src="drawings/img-comp.png"
-                alt="игра1"
-                title="игра"
-                height="25%"
-                width="100%"
-            /></a>
-          </td>
-          <td style="text-align: center">
-            <a href="simple_pages/english.html">
-              <img
-                src="drawings/english1.png"
-                alt="English"
-                title="English"
-                height="50%"
-                width="50%"
-              />
-            </a>
-          </td>
-        </tr>
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #2c3e50;
+    }
 
-        <tr>
-          <td style="text-align: center">
-            <a href="Hedgehog.html">
-              <img
-                src="drawings/go.gif"
-                alt="Hedgehog"
-                title="Hedgehog"
-                height="50%"
-                width="50%"
-              /><br />
-              Collect mushrooms version 1</a
-            >
-          </td>
-          <td style="text-align: center">
-            <a href="hedgehog.html">
-              <img
-                src="./drawings/hedgehog_box.svg"
-                alt="Hedgehog"
-                title="Hedgehog"
-              />
-              <br />Collect mushrooms version 2
-            </a>
-          </td>
-        </tr>
+    /* Сетка для карточек */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-        <tr>
-          <td style="text-align: center">
-            <a href="simple_pages/JsClickAll.html">
-              <img
-                src="./drawings/wow.png"
-                alt="crazyClicker"
-                title="crazyClicker"
-                height="50%"
-                width="50%"
-              />
-              <br />Crazy Clicker</a
-            >
-          </td>
-          <td style="text-align: center">
-            <a href="game_click/FindClick.html">
-              <img
-                src="game_click/image.svg"
-                alt="Find ball"
-                title="Find ball"
-                height="90%"
-                width="90%"
-              />
-            </a>
-          </td>
-        </tr>
+    /* Стили карточки */
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(36, 21, 75, 0.385);
+      border: 3px solid rgba(37, 18, 72, 0.816);
+      /* Мягкая темная аура */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
 
-        <tr>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/glass/">
-              <img
-                src="drawings/glass.png"
-                alt="glass calculation"
-                title="glass calculation"
-                height="50%"
-                width="50%"
-              />
-              <br />glass calculation</a
-            >
-          </td>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/bisness-plans/">
-              <img
-                src="drawings/img-business_plans.png"
-                alt="business plans"
-                title="business plans"
-                height="50%"
-                width="50%"
-              />
-              <br />business plans</a
-            >
-          </td>
-        </tr>
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(44, 62, 80, 0.5);
+      /* Усиление тени при наведении */
+    }
 
-        <tr></tr>
-        <tr>
-          <td style="text-align: center">
-            <a href="https://panacond.github.io/drawings_draw/">
-              <img
-                src="drawings/drawings.svg"
-                alt="drawings"
-                title="drawings"
-                height="60%"
-                width="60%"
-              />
-              <br />drawings</a
-            >
-          </td>
-          <td style="text-align: center">
-            <a href="./simple_pages/4price5.html">
-              <img
-                src="https://raw.githubusercontent.com/Panacond/Panacond.github.io/refs/heads/main/drawings/transactions.jpg"
-                alt="transactions"
-                title="transactions"
-                height="50%"
-                width="50%"
-              />
-              <br />transactions</a
-            >
-          </td>
-        </tr>
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      /* Чтобы картинки не обрезались уродливо */
+      background: #fafafa;
+      padding: 10px;
+      box-sizing: border-box;
+    }
 
-        <tr></tr>
-      </tbody>
-    </table>
-    <br />
-  </body>
+    .card-title {
+      padding: 15px;
+      font-weight: 600;
+      /* border-top: 3px solid #2c3e50; */
+      /* Жирная темная полоса над текстом */
+      background-color: #fcfcfc;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Специфический скрипт из вашего оригинала */
+    link[rel="force-svg"] {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Додатки та розрахунки через браузер</h1>
+
+  <div class="app-grid">
+
+    <!-- Картка 1 -->
+    <a href="https://panacond.github.io/dbn_calculation/" class="card" target="_top">
+      <img src="drawings/calc_dbn.png" alt="calc_dbn">
+      <div class="card-title">Розрахунки за ДБН</div>
+    </a>
+
+    <!-- Картка 2 -->
+    <a href="https://panacond.github.io/Cutting_stock_problem/" class="card" target="_top">
+      <img src="./drawings/cutting_problem.png" alt="cutting_problem">
+      <div class="card-title">Рішення завдання розкрою</div>
+    </a>
+
+    <!-- Картка 3 -->
+    <a href="https://panacond.github.io/quotes/" class="card" target="_top">
+      <img src="image/motivation.png" alt="Quotes">
+      <div class="card-title">Цитати</div>
+    </a>
+
+    <!-- Картка 4 -->
+    <a href="https://panacond.github.io/counter_vue/" class="card" target="_top">
+      <img src="drawings/couner.png" alt="Counter">
+      <div class="card-title">Лічильник</div>
+    </a>
+
+    <!-- Картка 5 -->
+    <a href="./simple_pages/call back.html" class="card">
+      <img src="drawings/img-callBack.svg" alt="call back">
+      <div class="card-title">Call Back</div>
+    </a>
+
+    <!-- Картка 6 -->
+    <a href="./simple_pages/calculation_beam.html" class="card" target="_top">
+      <img src="image/simple_beam_calc.svg" alt="Beam calc">
+      <div class="card-title">Розрахунок балки</div>
+    </a>
+
+    <!-- Картка 7 -->
+    <a href="simple_pages/lem.html" class="card">
+      <img src="drawings/img-comp.png" alt="Game 1">
+      <div class="card-title">Гра "Лем"</div>
+    </a>
+
+    <!-- Картка 8 -->
+    <a href="simple_pages/english.html" class="card">
+      <img src="drawings/english1.png" alt="English">
+      <div class="card-title">English Learning</div>
+    </a>
+
+    <!-- Картка 9 -->
+    <a href="Hedgehog.html" class="card">
+      <img src="drawings/go.gif" alt="Hedgehog v1">
+      <div class="card-title">Collect mushrooms v1</div>
+    </a>
+
+    <!-- Картка 10 -->
+    <a href="hedgehog.html" class="card">
+      <img src="./drawings/hedgehog_box.svg" alt="Hedgehog v2">
+      <div class="card-title">Collect mushrooms v2</div>
+    </a>
+
+    <!-- Картка 11 -->
+    <a href="simple_pages/12JsClickAll.html" class="card">
+      <img src="./drawings/12JsClickAll.png" alt="Crazy Clicker">
+      <div class="card-title">Crazy Clicker</div>
+    </a>
+
+    <!-- Картка 12 -->
+    <a href="simple_pages/16_bridge.html" class="card">
+      <img src="./drawings/16_bridge.png" alt="Clicker Bridge">
+      <div class="card-title">Clicker Bridge</div>
+    </a>
+
+    <a href="simple_pages/15door.html" class="card">
+      <img src="./drawings/15door.png" alt="Clicker Doors">
+      <div class="card-title">Clicker Doors</div>
+    </a>
+
+    <a href="simple_pages/31_city.html" class="card">
+      <img src="./drawings/31_city.png" alt="Clicker city">
+      <div class="card-title">Clicker city</div>
+    </a>
+    
+
+    <!-- Картка 13 -->
+    <a href="game_click/FindClick.html" class="card">
+      <img src="game_click/image.svg" alt="Find ball">
+      <div class="card-title">Знайти кульку</div>
+    </a>
+
+    <!-- Картка 14 -->
+    <a href="https://panacond.github.io/glass/" class="card">
+      <img src="drawings/glass.png" alt="Glass calc">
+      <div class="card-title">Glass calculation</div>
+    </a>
+
+    <!-- Картка 15 -->
+    <a href="https://panacond.github.io/bisness-plans/" class="card">
+      <img src="drawings/img-business_plans.png" alt="Business plans">
+      <div class="card-title">Business plans</div>
+    </a>
+
+    <!-- Картка 16 -->
+    <a href="https://panacond.github.io/drawings_draw/" class="card">
+      <img src="drawings/drawings.svg" alt="Drawings">
+      <div class="card-title">Drawings Editor</div>
+    </a>
+
+    <!-- Картка 17 -->
+    <a href="./simple_pages/4price5.html" class="card">
+      <img src="https://raw.githubusercontent.com/Panacond/Panacond.github.io/refs/heads/main/drawings/transactions.jpg"
+        alt="Transactions">
+      <div class="card-title">Transactions</div>
+    </a>
+
+  </div>
+
+  <footer style="text-align: center; padding: 40px; color: #888;">
+    &copy; 2026 Всі права захищені
+  </footer>
+
+</body>
+
 </html>

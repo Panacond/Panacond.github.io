@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thai Fire Quest - High Visibility</title>
+    <style>
+        :root {
+            --gold: #ffcc00;
+            --fire: #ff4d00;
+            --water: #00d4ff;
+            --bg: #050505;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg);
+            font-family: 'Tahoma', sans-serif;
+            color: white;
+        }
+
+        #container {
+            display: grid;
+            height: 100vh;
+            width: 100vw;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 12px;
+            padding: 12px;
+            box-sizing: border-box;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s;
+        }
+
+        @media (max-width: 768px),
+        (orientation: portrait) {
+            #container {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(8, 1fr);
+                gap: 6px;
+                /* Меньше зазор */
+                padding: 6px;
+            }
+
+            .player-val {
+                font-size: 10vmin !important;
+            }
+
+            /* Чуть меньше цифра */
+            .player-stats-row {
+                font-size: 3vmin !important;
+            }
+        }
+
+        .tile {
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            user-select: none;
+            font-size: 8vmin;
+            position: relative;
+        }
+
+        .locked {
+            cursor: not-allowed;
+            filter: grayscale(1) brightness(0.15);
+            opacity: 0.2;
+            transform: scale(0.9);
+        }
+
+        .player-tile {
+            background: #111;
+            cursor: default;
+            border: 3px solid var(--fire);
+            /* Чуть тоньше рамка */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            /* Распределяет элементы равномерно */
+            align-items: center;
+            box-shadow: 0 0 20px rgba(255, 77, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            padding: 4px;
+            /* Внутренний отступ */
+            box-sizing: border-box;
+        }
+
+        /* Иконки */
+        .icon {
+            width: 5vmin;
+            height: 5vmin;
+            fill: #aaa;
+        }
+
+        .icon-tower {
+            width: 5vmin;
+            height: 5vmin;
+            fill: var(--gold);
+        }
+
+        /* Значение силы игрока */
+        .player-val {
+            font-size: 14vmin;
+            color: var(--fire);
+            line-height: 0.9;
+            z-index: 2;
+            font-weight: 900;
+        }
+
+        .exp-container {
+            width: 90%;
+            height: 6px;
+            /* Немного тоньше */
+            background: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            /* Чтобы не сжималась */
+            margin: 4px 0;
+        }
+
+        #exp-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--fire);
+            transition: width 0.3s;
+        }
+
+        /* Укрупненные статы */
+        .player-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 4vmin;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        #click-counter {
+            color: #eee;
+        }
+
+        .level-num {
+            color: var(--gold);
+        }
+
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .level-zoom {
+            transform: scale(4) rotate(15deg);
+            opacity: 0;
+            filter: blur(10px);
+        }
+
+        #win-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .water-splash {
+            animation: waterSplash 0.7s forwards;
+        }
+
+        @keyframes waterSplash {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.8);
+                border-color: var(--water);
+            }
+
+            100% {
+                box-shadow: 0 0 80px 40px rgba(0, 212, 255, 0);
+                border-color: var(--fire);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="win-overlay">
+        <svg style="width:30vmin; height:30vmin; fill:#ff4757;" viewBox="0 0 24 24">
+            <path d="M22,5V3H19V5H17V3H7V5H5V3H2V5H5V8H7V5H17V8H19V5H22M17,10V21H19V10H17M7,10V21H9V10H7Z" />
+        </svg>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        const container = document.querySelector('#container');
+        const winOverlay = document.querySelector('#win-overlay');
+
+        let currentLevel = 1;
+        let playerPower = 1;
+        let expProgress = 0;
+        let totalClicks = 0;
+        const expNeeded = 4;
+        let doorIndex = -1;
+        let boardStates = [];
+
+        const thaiNums = ["๐", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙", "๑๐"];
+        const colors = [
+            '#121212', '#3b241c', '#54392d', '#705345', '#8c6e5e',
+            '#a88b79', '#c4aa95', '#e0c8b2', '#f7e5d2', '#fff4eb', '#ffffff'
+        ];
+
+        const icons = {
+            tower: `<svg class="icon-tower" viewBox="0 0 24 24"><path d="M21,19V17H19V10H20V8H18V4H16V8H15V10H16V17H14V14H15V12H13V9H11V12H9V14H10V17H8V10H9V8H7V4H5V8H3V10H4V17H2V19H21Z"/></svg>`,
+            portal: `<svg viewBox="0 0 24 24"><path d="M22,5V3H19V5H17V3H7V5H5V3H2V5H5V8H7V5H17V8H19V5H22M17,10V21H19V10H17M7,10V21H9V10H7Z"/></svg>`
+        };
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => { });
+            }
+        }
+
+        function startNewLevel() {
+            container.classList.remove('level-zoom');
+            boardStates = new Array(32).fill(0);
+            expProgress = 0;
+            playerPower = 1;
+
+            let cells = [];
+            for (let lv = 1; lv <= 7; lv++) {
+                for (let i = 0; i < 4; i++) cells.push(lv);
+            }
+            while (cells.length < 31) cells.push(Math.floor(Math.random() * 8) + 1);
+            cells.sort(() => Math.random() - 0.5);
+
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const playerIdx = isPortrait ? 0 : 7;
+
+            let ptr = 0;
+            for (let i = 0; i < 32; i++) {
+                boardStates[i] = (i === playerIdx) ? -1 : cells[ptr++];
+            }
+
+            doorIndex = Math.floor(Math.random() * 32);
+            while (doorIndex === playerIdx) doorIndex = Math.floor(Math.random() * 32);
+
+            renderBoard();
+        }
+
+        function renderBoard() {
+            container.innerHTML = '';
+            winOverlay.style.display = 'none';
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const playerIdx = isPortrait ? 0 : 7;
+
+            for (let i = 0; i < 32; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+
+                if (i === playerIdx) {
+                    tile.classList.add('player-tile');
+                    tile.id = "player-stat";
+                    updatePlayerUI(tile);
+                } else {
+                    tile.dataset.index = i;
+                    tile.onclick = handleTileClick;
+                    updateTileLook(tile, i);
+                }
+                container.appendChild(tile);
+            }
+        }
+
+        function updatePlayerUI(tile) {
+            if (!tile) tile = document.getElementById('player-stat');
+            tile.innerHTML = `
+                <div class="player-val">${thaiNums[playerPower]}</div>
+                <div class="exp-container"><div id="exp-bar" style="width:${(expProgress / expNeeded) * 100}%"></div></div>
+                <div class="player-stats-row">
+                    <span id="click-counter">${totalClicks}</span>
+                    ${icons.tower}
+                    <span class="level-num">${currentLevel}</span>
+                </div>
+            `;
+        }
+
+        function updateTileLook(tile, idx) {
+            const val = boardStates[idx];
+            tile.style.backgroundColor = colors[val];
+
+            if (val === 0 && idx === doorIndex) {
+                tile.innerHTML = `<div style="width:65%; height:65%; fill:white;">${icons.portal}</div>`;
+                tile.style.backgroundColor = "#ff4757";
+                tile.classList.remove('locked');
+            } else {
+                tile.textContent = val > 0 ? thaiNums[val] : "";
+                if (val > playerPower) tile.classList.add('locked');
+                else tile.classList.remove('locked');
+            }
+        }
+
+        function handleTileClick(e) {
+            toggleFullscreen();
+            const idx = parseInt(e.currentTarget.dataset.index);
+            const val = boardStates[idx];
+            if (val > playerPower || val < 0) return;
+
+            totalClicks++;
+
+            const p = document.createElement('div');
+            p.className = 'spark';
+            p.style.backgroundColor = '#ffcc00';
+            p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
+            document.body.appendChild(p);
+            p.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'translate(0,20px) scale(0)', opacity: 0 }], 400).onfinish = () => p.remove();
+
+            if (val > 0) {
+                boardStates[idx]--;
+                if (boardStates[idx] === 0) {
+                    expProgress++;
+                    if (expProgress >= expNeeded) {
+                        playerPower = Math.min(10, playerPower + 1);
+                        expProgress = 0;
+                        document.getElementById('player-stat').classList.add('water-splash');
+                        setTimeout(() => document.getElementById('player-stat').classList.remove('water-splash'), 700);
+                        document.querySelectorAll('.tile:not(.player-tile)').forEach(t => updateTileLook(t, t.dataset.index));
+                    }
+                    if (idx === doorIndex) setTimeout(finishLevel, 400);
+                }
+                updateTileLook(e.currentTarget, idx);
+            } else if (idx === doorIndex) {
+                finishLevel();
+            }
+            updatePlayerUI();
+        }
+
+        function finishLevel() {
+            container.classList.add('level-zoom');
+            setTimeout(() => {
+                winOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    currentLevel++;
+                    startNewLevel();
+                }, 1200);
+            }, 600);
+        }
+
+        window.addEventListener('resize', renderBoard);
+        startNewLevel();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bridge Quest: Real Pathfinding</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #0a0a0a; font-family: 'Arial Black', sans-serif; color: white; }
+        #container { display: grid; height: 100vh; width: 100vw; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr); }
+        
+        @media (orientation: portrait) {
+            #container { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(8, 1fr); }
+        }
+
+        .tile {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+            font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            user-select: none; font-size: 6vmin;
+        }
+
+        .portal { border: 4px solid white !important; box-shadow: 0 0 15px rgba(0,150,255,0.7); z-index: 10; }
+        .locked { filter: grayscale(1) brightness(0.4); border-style: dashed !important; cursor: not-allowed; }
+
+        .wall { background-color: #000 !important; cursor: not-allowed; border: none; color: #444; font-size: 4vmin; }
+        .wall::after { content: '✕'; }
+
+        .info-tile { background-color: #1a1a1a; cursor: default; font-size: 2.2vmin; text-align: center; line-height: 1.2; }
+        .target-tile { font-size: 10vmin !important; border: 3px solid rgba(255,255,255,0.1); cursor: default !important; }
+
+        #win-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); display: none; flex-direction: column;
+            align-items: center; justify-content: center; color: #00ffff;
+            font-size: 7vw; z-index: 1000; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="win-overlay">
+        <div>УРОВЕНЬ ПРОЙДЕН!</div>
+        <div style="font-size: 3vw; color: white; margin-top: 20px;" id="win-stats"></div>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        const container = document.querySelector('#container');
+        const winOverlay = document.querySelector('#win-overlay');
+        const winStats = document.querySelector('#win-stats');
+        
+        const colors = [
+            'rgb(0, 150, 255)', // 0: Синий (Мост)
+            'rgb(255, 50, 50)',  // 1: Красный
+            'rgb(255, 200, 0)', // 2: Желтый
+            'rgb(0, 255, 100)', // 3: Зеленый
+            'rgb(40, 40, 40)'    // 4: Пустой
+        ];
+
+        let level = 1;
+        let totalClicks = 0; 
+        let targets = [];
+        let grid = [];
+        let walls = [];
+        let startIdx, endIdx;
+        let exitLocked = true;
+
+        /**
+         * Переход в полноэкранный режим
+         */
+        function toggleFullScreen() {
+            if (!document.fullscreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.msFullscreenElement) {
+                
+                const docEl = document.documentElement;
+                if (docEl.requestFullscreen) docEl.requestFullscreen();
+                else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+                else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+            }
+        }
+
+        /**
+         * Инициализация нового уровня (генерация карты и целей)
+         */
+        function initLevel() {
+            winOverlay.style.display = 'none';
+            exitLocked = true;
+            grid = Array(32).fill(colors[4]);
+            
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const cols = isPortrait ? 4 : 8;
+
+            // 1. Установка входа и выхода
+            if (isPortrait) {
+                startIdx = Math.floor(Math.random() * 4);
+                endIdx = 28 + Math.floor(Math.random() * 4);
+            } else {
+                startIdx = Math.floor(Math.random() * 4) * 8;
+                endIdx = Math.floor(Math.random() * 4) * 8 + 7;
+            }
+
+            // 2. Генерация целей (сколько плиток какого цвета нужно иметь на поле)
+            targets = [
+                { colorIdx: 1, count: Math.floor(Math.random() * 3) + 2 },
+                { colorIdx: 2, count: Math.floor(Math.random() * 2) + 2 },
+                { colorIdx: 3, count: Math.floor(Math.random() * 2) + 2 }
+            ];
+
+            // 3. Создание лабиринта со стенами
+            generateSolidPath(cols);
+            render();
+        }
+
+        /**
+         * Генерация стен так, чтобы проход между IN и OUT теоретически был возможен
+         */
+        function generateSolidPath(cols) {
+            let attempts = 0;
+            const infoSlots = getInfoSlots(window.innerWidth < window.innerHeight);
+            
+            while (attempts < 500) {
+                walls = [];
+                let pool = [...Array(32).keys()].filter(i => 
+                    i !== startIdx && i !== endIdx && !infoSlots.includes(i)
+                );
+
+                let wallCount = 4 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < wallCount; i++) {
+                    if (pool.length === 0) break;
+                    let w = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+                    walls.push(w);
+                }
+
+                if (checkBFS(startIdx, endIdx, cols, true)) break;
+                attempts++;
+            }
+        }
+
+        /**
+         * Получение соседних ячеек для алгоритма поиска пути
+         */
+        function getNeighbors(i, cols) {
+            const n = [];
+            if (i >= cols) n.push(i - cols);
+            if (i < 32 - cols) n.push(i + cols);
+            if (i % cols !== 0) n.push(i - 1);
+            if ((i + 1) % cols !== 0) n.push(i + 1);
+            return n;
+        }
+
+        /**
+         * Алгоритм поиска в ширину (BFS).
+         * Если isGenerating = true, проверяет принципиальную возможность пути.
+         * Если false — проверяет наличие пути именно из синих плиток (моста).
+         */
+        function checkBFS(from, to, cols, isGenerating) {
+            let queue = [from];
+            let visited = new Set([from]);
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const infoSlots = getInfoSlots(isPortrait);
+
+            while (queue.length > 0) {
+                let curr = queue.shift();
+                if (curr === to) return true;
+                
+                for (let n of getNeighbors(curr, cols)) {
+                    if (visited.has(n)) continue;
+
+                    const isWall = walls.includes(n);
+                    const isInfo = infoSlots.includes(n);
+                    
+                    if (!isWall && !isInfo) {
+                        if (isGenerating || grid[n] === colors[0] || n === to) {
+                            visited.add(n);
+                            queue.push(n);
+                        }
+                    } else if (n === to) { 
+                        visited.add(n);
+                        queue.push(n);
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Определяет ячейки, зарезервированные под отображение целей
+         */
+        function getInfoSlots(isPortrait) {
+            let possible = isPortrait ? [0,1,2,3] : [7,15,23,31];
+            return possible.filter(idx => idx !== startIdx && idx !== endIdx);
+        }
+
+        /**
+         * Отрисовка игрового поля
+         */
+        function render() {
+            container.innerHTML = '';
+            const isPortrait = window.innerWidth < window.innerHeight;
+            const cols = isPortrait ? 4 : 8;
+            const infoSlots = getInfoSlots(isPortrait);
+
+            for (let i = 0; i < 32; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+
+                if (i === startIdx) {
+                    tile.classList.add('info-tile', 'portal');
+                    tile.style.backgroundColor = colors[0];
+                    tile.innerHTML = `IN<br><span style="font-size:1.5vmin">Σ:${totalClicks}</span>`;
+                } else if (i === endIdx) {
+                    tile.classList.add('info-tile', 'portal');
+                    tile.style.backgroundColor = exitLocked ? '#333' : colors[0];
+                    if (exitLocked) tile.classList.add('locked');
+                    tile.innerHTML = exitLocked ? "🔒" : "OUT";
+                } else if (walls.includes(i)) {
+                    tile.classList.add('wall');
+                } else {
+                    let targetIdx = infoSlots.indexOf(i);
+                    if (targetIdx !== -1 && targetIdx < 3) {
+                        tile.classList.add('info-tile', 'target-tile');
+                        let t = targets[targetIdx];
+                        tile.style.backgroundColor = colors[t.colorIdx];
+                        tile.id = `target-${targetIdx}`;
+                    } else {
+                        tile.style.backgroundColor = grid[i];
+                        tile.dataset.idx = i;
+                        tile.onclick = (e) => handleInteraction(e.target.dataset.idx);
+                    }
+                }
+                container.appendChild(tile);
+            }
+            updateCounters();
+        }
+
+        /**
+         * Обработка нажатия на игровую плитку
+         */
+        function handleInteraction(idx) {
+            // Включаем полноэкранный режим при клике
+            toggleFullScreen();
+            
+            totalClicks++;
+            let cIdx = colors.indexOf(grid[idx]);
+            let nextIdx = (cIdx + 1) % colors.length;
+            grid[idx] = colors[nextIdx];
+            render();
+            checkVictory();
+        }
+
+        /**
+         * Обновление счетчиков целей в инфо-ячейках
+         */
+        function updateCounters() {
+            const counts = Array(5).fill(0);
+            grid.forEach((c) => { 
+                let idx = colors.indexOf(c);
+                if (idx !== -1 && idx < 4) counts[idx]++; 
+            });
+
+            let allMet = true;
+            targets.forEach((t, i) => {
+                const el = document.getElementById(`target-${i}`);
+                if (el) {
+                    let diff = t.count - counts[t.colorIdx];
+                    el.textContent = diff === 0 ? "" : diff;
+                    if (diff !== 0) allMet = false;
+                }
+            });
+
+            // Если все цветовые цели достигнуты, разблокируем выход (OUT)
+            if (allMet && exitLocked) {
+                exitLocked = false;
+                render(); 
+            }
+        }
+
+        /**
+         * Проверка: соединен ли вход и выход непрерывным синим мостом
+         */
+        function checkVictory() {
+            if (exitLocked) return;
+            const cols = window.innerWidth < window.innerHeight ? 4 : 8;
+            if (checkBFS(startIdx, endIdx, cols, false)) {
+                winStats.innerHTML = `СУММА КЛИКОВ: ${totalClicks}<br><span style="color:#aaa; font-size:3vmin">Уровень ${level} завершен</span>`;
+                winOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    level++;
+                    initLevel();
+                }, 2500);
+            }
+        }
+
+        // Перерисовка при повороте экрана
+        window.addEventListener('resize', () => { render(); });
+        
+        // Старт игры
+        initLevel();
+    </script>
+</body>
+</html>
