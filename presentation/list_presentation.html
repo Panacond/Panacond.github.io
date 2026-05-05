@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мої веб-додатки</title>
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-color: #333;
+      --accent-color: #3498db;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #2c3e50;
+    }
+
+    /* Сетка для карточек */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Стили карточки */
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(36, 21, 75, 0.385);
+      border: 3px solid rgba(37, 18, 72, 0.816);
+      /* Мягкая темная аура */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px rgba(44, 62, 80, 0.5);
+      /* Усиление тени при наведении */
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      /* Чтобы картинки не обрезались уродливо */
+      background: #fafafa;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .card-title {
+      padding: 15px;
+      font-weight: 600;
+      /* border-top: 3px solid #2c3e50; */
+      /* Жирная темная полоса над текстом */
+      background-color: #fcfcfc;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Специфический скрипт из вашего оригинала */
+    link[rel="force-svg"] {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Додатки та розрахунки через браузер</h1>
+
+  <div class="app-grid">
+
+    <a href="01_book-beam.html" class="card" target="_top">
+      <div class="card-title">Культура умственного труда</div>
+    </a>
+
+    <a href="02_gastev_f.html" class="card" target="_top">
+      <div class="card-title">Как выполнять задачи</div>
+    </a>
+
+    <a href="03-teylor.html" class="card" target="_top">
+      <div class="card-title">Принципы научного менеджмента</div>
+    </a>
+
+    <a href="https://panacond.github.io/counter_vue/" class="card" target="_top">
+      <img src="drawings/couner.png" alt="Counter">
+      <div class="card-title">Лічильник</div>
+    </a>
+
+
+  </div>
+
+  <footer style="text-align: center; padding: 40px; color: #888;">
+    &copy; 2026
+  </footer>
+
+</body>
+
+</html>

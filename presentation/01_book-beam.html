@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Культура умственного труда</title>
+    <style>
+        :root {
+            /* --- НАСТРОЙКИ ЦВЕТА (BEIGE THEME) --- */
+            --bg-color: #f7f2d3;
+            --text-color: #333;
+            --accent-color: #8b743d;
+            --heading-color: #333;
+            --secondary-text: #555;
+
+            /* --- ГЛАВНАЯ НАСТРОЙКА: РАЗМЕР ТЕКСТА --- */
+            /* Меняйте это число, чтобы увеличить или уменьшить всё сразу */
+            --base-font-size: 30px; 
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            /* Установка базового размера для всего документа */
+            font-size: var(--base-font-size);
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ СЛАЙДОВ */
+        .slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5% 10%;
+            box-sizing: border-box;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            transform: scale(0.95);
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* ТИПОГРАФИКА (всё в em, чтобы зависело от базового размера) */
+        h3 {
+            font-size: 2.2em; /* В 2.2 раза больше базового */
+            color: var(--heading-color);
+            margin: 0 0 0.5em 0;
+            line-height: 1.1;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        blockquote {
+            font-size: 1.1em;
+            font-style: italic;
+            border-left: 0.2em solid var(--accent-color);
+            padding-left: 1em;
+            margin: 1em 0;
+            color: var(--secondary-text);
+            max-width: 80%;
+        }
+
+        ul, ol {
+            text-align: left;
+            display: inline-block;
+            font-size: 1em; /* Равен базовому */
+            line-height: 1.4;
+            margin-top: 0.5em;
+        }
+
+        li { margin-bottom: 0.6em; }
+
+        strong { color: var(--accent-color); }
+
+        /* ИНТЕРФЕЙС И КНОПКИ */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.7em; /* Чуть меньше основного текста */
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #6b5a2f;
+            transform: translateY(-2px);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 6px;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ */
+        @media (max-width: 768px) {
+            :root {
+                /* На мобильных автоматически уменьшаем базовый шрифт */
+                --base-font-size: 18px; 
+            }
+            .slide { padding: 10px; }
+            h3 { font-size: 1.8em; }
+            .controls { bottom: 15px; right: 15px; gap: 8px; }
+            button { padding: 10px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="progress"></div>
+
+    <div class="slides-container">
+        <div class="slide active">
+            <h3>Культура умственного труда</h3>
+            <blockquote>Как повысить продуктивность через спокойствие и внимание.</blockquote>
+            <ul>
+                <li>Концентрация и удержание внимания</li>
+                <li>Настройка на работу</li>
+                <li>План-схема и отсутствие спешки</li>
+                <li>Принцип безупречности</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3>Фундамент успеха</h3>
+            <p><strong>Навык сосредоточения мыслей</strong></p>
+            <ul>
+                <li>Умственная работа требует навыка концентрации.</li>
+                <li>Способность направлять мысли доступна каждому при наличии воли.</li>
+                <li>Это тренируемый навык, а не врожденный дар.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3>Тренировка внимания</h3>
+            <p><i>(продолжительность 5 минут)</i></p>
+            <ul>
+                <li><strong>Задача:</strong> Удерживать внимание на одном предмете.</li>
+                <li><strong>Процесс:</strong> Созерцание формы, цвета, деталей.</li>
+                <li><strong>Цель:</strong> Полное отсутствие внешних отвлечений.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3>Настройка на работу</h3>
+            <ol>
+                <li><strong>Неподвижность:</strong> Замрите на несколько минут.</li>
+                <li><strong>Тишина внутри:</strong> Полный покой мыслей и тела.</li>
+                <li><strong>Переход:</strong> Направьте энергию на задачу немедленно.</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h3>Мысленная картина</h3>
+            <ul>
+                <li>Проследите все элементы работы от начала до конца.</li>
+                <li>Увидьте полную структуру и план.</li>
+                <li>Фиксируйте узлы короткими записями.</li>
+                <li>Обдумывание окупается скоростью реализации.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3>Хладнокровие</h3>
+            <ul>
+                <li>Торопливость — враг качества.</li>
+                <li>Ошибки в начале губят весь процесс.</li>
+                <li>Ваше главное оружие в спешке — спокойствие.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h3>Принцип безупречности</h3>
+            <blockquote>Любая работа должна выполняться максимально хорошо.</blockquote>
+            <p>Один плохо выполненный элемент может свести на нет весь колоссальный труд.</p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn">← Назад</button>
+        <button id="nextBtn">Вперед →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            
+            // Прогресс
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+
+            // Блокировка кнопок на границах
+            prevBtn.style.opacity = currentSlide === 0 ? "0.3" : "1";
+            nextBtn.style.opacity = currentSlide === slides.length - 1 ? "0.3" : "1";
+        }
+
+        function changeSlide(direction) {
+            let newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < slides.length) {
+                currentSlide = newSlide;
+                updateSlide();
+            }
+        }
+
+        // События клика
+        prevBtn.addEventListener('click', () => changeSlide(-1));
+        nextBtn.addEventListener('click', () => changeSlide(1));
+
+        // Клавиатура
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        // Свайпы для телефонов
+        let touchstartX = 0;
+        let touchendX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleGesture();
+        }, false);
+
+        function handleGesture() {
+            if (touchstartX - touchendX > 50) changeSlide(1);
+            if (touchendX - touchstartX > 50) changeSlide(-1);
+        }
+
+        // Инициализация
+        updateSlide();
+    </script>
+</body>
+</html>

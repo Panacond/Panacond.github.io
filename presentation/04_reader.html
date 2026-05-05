@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MD Reader Pro Mobile</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --card: #f1f3f5;
+            --accent: #228be6;
+            --border: #dee2e6;
+            --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1b1e;
+            --text: #ced4da;
+            --card: #25262b;
+            --accent: #4dabf7;
+            --border: #373a40;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .container { width: 100%; max-width: 800px; margin: 0 auto; box-sizing: border-box; }
+
+        /* Интерфейс списков */
+        .home-screen { padding: 20px; }
+        .upload-btn {
+            display: block; width: 100%; padding: 18px; background: var(--accent);
+            color: white; border: none; border-radius: 10px; font-weight: bold; margin-bottom: 20px;
+        }
+        .file-item {
+            background: var(--card); padding: 15px; margin-bottom: 10px;
+            border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* Читалка */
+        #reader-view { display: none; }
+        .toolbar {
+            position: sticky; top: 0; background: var(--bg);
+            display: flex; justify-content: space-between; padding: 10px;
+            border-bottom: 1px solid var(--border); z-index: 1000;
+        }
+
+        /* Текст и Заголовки */
+        #content-area {
+            padding: 15px;
+            text-align: justify; /* Текст по ширине */
+            hyphens: auto;      /* Автопереносы */
+            font-size: 18px;
+        }
+
+        /* Специфические заголовки для мобилок */
+        #content-area h1, #content-area h2, #content-area h3, 
+        #content-area h4, #content-area h5, #content-area h6 {
+            font-size: 1.2em; /* Почти одинаковый размер */
+            margin-top: 1.5em;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+        #content-area h1 { border-bottom: 2px solid var(--accent); padding-bottom: 5px; color: var(--accent); }
+        #content-area h2 { border-bottom: 1px solid var(--border); font-weight: 700; }
+        #content-area h3 { font-weight: 600; color: var(--secondary); font-style: italic; }
+
+        /* Меню оглавления */
+        #toc-menu {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); max-height: 50vh; overflow-y: auto;
+            padding: 20px; border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+            z-index: 2000; display: none;
+        }
+        .toc-item { padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .toc-h1 { font-weight: bold; padding-left: 0; }
+        .toc-h2 { padding-left: 15px; font-size: 0.9em; }
+
+        .btn-icon {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 12px; border-radius: 6px;
+        }
+
+        .hidden { display: none; }
+        .overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 1500; display: none;
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+<div id="main-view" class="container home-screen">
+    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Открыть файл .md</button>
+    <input type="file" id="fileInput" class="hidden" accept=".md" onchange="handleFile(this.files[0])">
+    <h3>⭐ Избранное</h3>
+    <div id="fav-list"></div>
+    <h3>🕒 Недавние</h3>
+    <div id="recent-list"></div>
+</div>
+
+<div id="reader-view">
+    <div class="toolbar">
+        <button class="btn-icon" onclick="exitReader()">←</button>
+        <button class="btn-icon" onclick="toggleTOC()">📖 Содержание</button>
+        <div>
+            <button class="btn-icon" onclick="toggleTheme()">🌓</button>
+            <button class="btn-icon" id="favToggle" onclick="toggleFavCurrent()">☆</button>
+        </div>
+    </div>
+    <div class="container">
+        <article id="content-area"></article>
+    </div>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleTOC()"></div>
+<div id="toc-menu">
+    <h3 style="margin-top:0">Содержание</h3>
+    <div id="toc-list"></div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('md_reader_db') || '{"files":{}, "recentIds":[], "favIds":[]}');
+
+    renderLibrary();
+
+    function handleFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const id = "id_" + Date.now();
+            db.files[id] = { id, name: file.name, content: e.target.result };
+            db.recentIds = [id, ...db.recentIds.filter(i => i !== id)].slice(0, 10);
+            save();
+            openFile(id);
+        };
+        reader.readAsText(file);
+    }
+
+    function openFile(id) {
+        const file = db.files[id];
+        window.currentId = id;
+        document.getElementById('main-view').style.display = 'none';
+        document.getElementById('reader-view').style.display = 'block';
+        
+        const area = document.getElementById('content-area');
+        area.innerHTML = marked.parse(file.content);
+        
+        generateTOC();
+        
+        if (window.MathJax) MathJax.typeset();
+        updateFavButton();
+        window.scrollTo(0, 0);
+    }
+
+    function generateTOC() {
+        const list = document.getElementById('toc-list');
+        list.innerHTML = "";
+        const headers = document.querySelectorAll('#content-area h1, #content-area h2');
+        
+        headers.forEach((h, index) => {
+            const id = "header-" + index;
+            h.id = id;
+            const item = document.createElement('div');
+            item.className = `toc-item toc-${h.tagName.toLowerCase()}`;
+            item.innerText = h.innerText;
+            item.onclick = () => {
+                document.getElementById(id).scrollIntoView();
+                toggleTOC();
+            };
+            list.appendChild(item);
+        });
+    }
+
+    function toggleTOC() {
+        const menu = document.getElementById('toc-menu');
+        const overlay = document.getElementById('overlay');
+        const isVisible = menu.style.display === 'block';
+        menu.style.display = isVisible ? 'none' : 'block';
+        overlay.style.display = isVisible ? 'none' : 'block';
+    }
+
+    function exitReader() {
+        document.getElementById('main-view').style.display = 'block';
+        document.getElementById('reader-view').style.display = 'none';
+        renderLibrary();
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function toggleFavCurrent() {
+        const id = window.currentId;
+        db.favIds = db.favIds.includes(id) ? db.favIds.filter(i => i !== id) : [...db.favIds, id];
+        save();
+        updateFavButton();
+    }
+
+    function updateFavButton() {
+        const isFav = db.favIds.includes(window.currentId);
+        document.getElementById('favToggle').innerText = isFav ? "★" : "☆";
+    }
+
+    function save() { localStorage.setItem('md_reader_db', JSON.stringify(db)); }
+
+    function renderLibrary() {
+        const draw = (ids, containerId) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            ids.forEach(id => {
+                const file = db.files[id];
+                if (!file) return;
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `<span>${file.name}</span> <span>${db.favIds.includes(id) ? '⭐' : '📖'}</span>`;
+                div.onclick = () => openFile(id);
+                container.appendChild(div);
+            });
+        };
+        draw(db.favIds, 'fav-list');
+        draw(db.recentIds, 'recent-list');
+    }
+</script>
+
+</body>
+</html>
