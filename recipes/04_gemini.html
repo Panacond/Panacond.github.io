@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ідеальні Сирники з Таймером</title>
+    <style>
+        :root {
+            --primary: #f39c12;
+            --bg: #fdf5e6;
+            --text: #2c3e50;
+            --card: #ffffff;
+            --accent: #e67e22;
+            --success: #27ae60;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; font-style: italic; margin-bottom: 20px; color: #7f8c8d; }
+
+        /* ТАЙМЕР */
+        .timer-box {
+            background: #fff8ef;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #ffe0b2;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+        }
+
+        #timer-display {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 5px 0;
+        }
+
+        .time-presets {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .preset-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 15px 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .preset-btn.active { background: var(--primary); color: white; }
+
+        .btn {
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .btn-start { background: var(--success); color: white; margin-bottom: 10px; }
+        .btn-reset { background: #95a5a6; color: white; font-size: 0.9rem; padding: 10px; }
+
+        .progress-bar-bg {
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+        }
+
+        /* РЕЦЕПТ */
+        h2 { color: var(--accent); border-bottom: 2px solid #fff3e0; padding-bottom: 5px; margin-top: 30px; }
+        .ingredients-list { background: #fafafa; padding: 20px; border-radius: 15px; list-style: none; padding-left: 20px; }
+        .ingredients-list li { margin-bottom: 8px; position: relative; }
+        .ingredients-list li::before { content: "•"; color: var(--primary); font-weight: bold; position: absolute; left: -15px; }
+        
+        .step { margin-bottom: 20px; padding-left: 15px; border-left: 4px solid var(--primary); }
+        .tip { background: #e8f4fd; padding: 15px; border-radius: 12px; border-left: 5px solid #3498db; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🥞 Ідеальні Сирники</h1>
+    <p class="subtitle">Секрет ніжних сирників: сухий сир та мінімум борошна</p>
+
+    <div class="timer-box">
+        <div class="time-presets">
+            <button class="preset-btn" onclick="setDuration(180, this)">3 хв</button>
+            <button class="preset-btn active" onclick="setDuration(240, this)">4 хв</button>
+            <button class="preset-btn" onclick="setDuration(300, this)">5 хв</button>
+        </div>
+
+        <div id="timer-display">04:00</div>
+        
+        <div class="progress-bar-bg">
+            <div id="progress-fill"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-start" id="startBtn" onclick="toggleTimer()">СТАРТ</button>
+            <button class="btn btn-reset" onclick="resetTimer()">Скинути</button>
+        </div>
+    </div>
+
+    <h2>Інгредієнти</h2>
+    <ul class="ingredients-list">
+        <li><b>Кисломолочний сир (5–9%):</b> 500 г</li>
+        <li><b>Яєчний жовток:</b> 1 шт.</li>
+        <li><b>Цукор:</b> 1–2 ст. л.</li>
+        <li><b>Ванільний цукор:</b> 1 ч. л.</li>
+        <li><b>Борошно:</b> 2 ст. л. в тісто + для панірування</li>
+        <li><b>Сіль:</b> дрібка</li>
+    </ul>
+
+    <h2>Приготування</h2>
+    <div class="step">
+        <strong>1. Підготовка:</strong> Віджати сир від вологи. Перетерти через сито або перебити блендером для гладкості.
+    </div>
+    <div class="step">
+        <strong>2. Замішування:</strong> Додати жовток, цукор, ваніль та сіль. Всипати борошно і замісити густе тісто.
+    </div>
+    <div class="step">
+        <strong>3. Формування:</strong> Зробити "ковбаску", нарізати на шайби. За допомогою склянки сформувати рівні бортики.
+    </div>
+    <div class="step">
+        <strong>4. Смаження:</strong> Розігріти олію. Смажити на середньому вогні (використовуйте таймер вище для кожної сторони).
+    </div>
+
+    <div class="tip">
+        <b>Порада:</b> Якщо хочете скоринку як у ресторані, після смаження поставте сирники в духовку (180°C) на 5 хвилин.
+    </div>
+</div>
+
+<script>
+    let duration = 240;
+    let timeLeft = 240;
+    let timerId = null;
+    
+    // Створення звукового контексту для сигналу
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playBeep() {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // Нота Ля
+        gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 1); // Звук триває 1 сек
+    }
+
+    function setDuration(seconds, btn) {
+        if (timerId) resetTimer();
+        duration = seconds;
+        timeLeft = seconds;
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        document.getElementById('timer-display').textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        document.getElementById('progress-fill').style.width = (timeLeft / duration) * 100 + '%';
+    }
+
+    function toggleTimer() {
+        const btn = document.getElementById('startBtn');
+        if (audioCtx.state === 'suspended') audioCtx.resume(); // Активуємо звук після кліку
+
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+            btn.textContent = 'ПРОДОВЖИТИ';
+        } else {
+            btn.textContent = 'ПАУЗА';
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    playBeep();
+                    setTimeout(() => alert("Час перевертати сирники!"), 100);
+                    resetTimer();
+                }
+            }, 1000);
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerId);
+        timerId = null;
+        timeLeft = duration;
+        document.getElementById('startBtn').textContent = 'СТАРТ';
+        updateDisplay();
+    }
+</script>
+
+</body>
+</html>

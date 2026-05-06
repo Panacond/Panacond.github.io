@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Винегрет на сковороде</title>
+    <style>
+        :root {
+            --primary-color: #8e1c1c;
+            --bg-color: #fdfaf5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .recipe-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 24px;
+            margin-top: 0;
+        }
+
+        .ingredients {
+            background: #fff5f5;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ingredients h2 {
+            font-size: 18px;
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-left: 45px;
+            position: relative;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .important {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="recipe-card">
+    <h1>🥗 Винегрет "Ленивый" (на пару)</h1>
+
+    <div class="ingredients">
+        <h2>Что нужно:</h2>
+        <ul>
+            <li>Свекла, морковь, картофель</li>
+            <li>Огурчик соленый / квашеная капуста</li>
+            <li>Горошек (замороженный или банка)</li>
+            <li>Лук репчатый</li>
+            <li>Масло растительное, соль, перец</li>
+            <li>Вода (50-100 мл)</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <div class="step-number">1</div>
+        <strong>Основа:</strong> Большая сковородка, малый огонь. Наливаем 2 ст. л. масла и 50-100 г воды.
+    </div>
+
+    <div class="step">
+        <div class="step-number">2</div>
+        <strong>Свекла:</strong> Чистим, режем кубиком — и сразу в сковороду под крышку.
+    </div>
+
+    <div class="step">
+        <div class="step-number">3</div>
+        <strong>Морковь:</strong> Пока свекла томится, чистим и режем морковь. Добавляем в сковороду.
+    </div>
+
+    <div class="step">
+        <div class="step-number">4</div>
+        <strong>Картошка:</strong> Режем кубиком и отправляем следом.
+    </div>
+
+    <div class="important">
+        <strong>Секрет:</strong> В начале не мешать! Овощи должны томиться на пару под крышкой. Если вода выкипела — чуть подливай, но не давай им плавать.
+    </div>
+
+    <div class="step">
+        <div class="step-number">5</div>
+        <strong>Добавки:</strong> Солим, перчим. Если горошек замороженный — клади сразу после картошки. Если из банки — в самом конце.
+    </div>
+
+    <div class="step">
+        <div class="step-number">6</div>
+        <strong>Финальный штрих:</strong> Добавляем огурчик, капусту и лук. 
+        <br><small><i>(Лук в конце под крышку — будет мягче, в холодное блюдо — будет острее).</i></small>
+    </div>
+
+    <div class="footer-note">
+        В конце можно добавить ещё немного масла по вкусу. Приятного аппетита! 🍴
+    </div>
+</div>
+
+</body>
+</html>
