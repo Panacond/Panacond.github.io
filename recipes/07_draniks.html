@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рецепт: Хрустящие драники</title>
+    <style>
+        :root {
+            --primary-color: #d35400;
+            --accent-color: #f39c12;
+            --bg-color: #fdfefe;
+            --text-color: #2c3e50;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 25px;
+        }
+
+        h1 { margin: 0; font-size: 1.8rem; }
+
+        .recipe-meta {
+            display: flex;
+            justify-content: space-around;
+            background: #fff5e6;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            border: 1px solid #ffe0b2;
+        }
+
+        .meta-item { text-align: center; }
+        .meta-item strong { display: block; color: var(--primary-color); }
+
+        h2 {
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+            margin-top: 30px;
+            font-size: 1.4rem;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ingredients-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+        }
+
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .tip-box {
+            background-color: #e8f4fd;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #95a5a6;
+            font-size: 0.8rem;
+        }
+
+        /* Оптимизация для тач-скринов */
+        @media (max-width: 480px) {
+            body { padding: 0; }
+            .container { padding: 15px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Золотистые Задраники</h1>
+    <p>Классический рецепт хрустящих оладий</p>
+</header>
+
+<div class="container">
+    <div class="recipe-meta">
+        <div class="meta-item"><strong>Время</strong> 30 мин</div>
+        <div class="meta-item"><strong>Порции</strong> 2-3</div>
+        <div class="meta-item"><strong>Сложность</strong> Легко</div>
+    </div>
+
+    <h2>Ингредиенты</h2>
+    <ul class="ingredients-list">
+        <li><span>Картофель</span> <span>600 г</span></li>
+        <li><span>Лук репчатый</span> <span>1 шт</span></li>
+        <li><span>Яйцо куриное</span> <span>1 шт</span></li>
+        <li><span>Мука (или крахмал)</span> <span>2 ст. л.</span></li>
+        <li><span>Соль, перец</span> <span>по вкусу</span></li>
+        <li><span>Масло для жарки</span> <span>50 мл</span></li>
+    </ul>
+
+    <h2>Приготовление</h2>
+    
+    <div class="step">
+        <span class="step-number">1</span>
+        Натрите лук на мелкой терке. Затем натрите картофель и сразу смешайте его с луком, чтобы масса не потемнела.
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        Слегка отожмите лишний сок. Если используете муку, добавьте её вместе с яйцом, солью и перцем. Тщательно перемешайте.
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        Разогрейте сковороду с маслом. Выкладывайте ложкой небольшие порции теста, придавая им плоскую форму.
+    </div>
+
+    <div class="step">
+        <span class="step-number">4</span>
+        Жарьте на среднем огне по 3-5 минут с каждой стороны до появления хрустящей коричневой корочки.
+    </div>
+
+    <div class="tip-box">
+        <strong>💡 Секрет успеха:</strong> Подавайте драники сразу же, "с пылу с жару". Лучше всего они сочетаются с холодной сметаной и мелко нарезанным укропом.
+    </div>
+</div>
+
+<footer>
+    <p>Создано для личного использования &bull; 2026</p>
+</footer>
+
+</body>
+</html>
