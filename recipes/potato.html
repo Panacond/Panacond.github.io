@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Как правильно сушить картофель в духовке: пошаговый рецепт</title>
+    <style>
+        :root {
+            --primary-color: #8c6239;
+            --secondary-color: #f4ece1;
+            --text-dark: #3e2723;
+            --text-light: #5a5a5a;
+            --accent-color: #d4a373;
+            --white: #ffffff;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: #fcf9f5;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #a67c52, var(--primary-color));
+            color: var(--white);
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(140, 98, 57, 0.15);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .intro-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        /* Инфо-плашки */
+        .recipe-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .meta-item {
+            background-color: var(--white);
+            padding: 15px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #f0e6df;
+        }
+
+        .meta-item .label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .meta-item .value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Шаги приготовления */
+        .steps {
+            list-style: none;
+        }
+
+        .step-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border: 1px solid #f0e6df;
+            position: relative;
+        }
+
+        .step-num {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            line-height: 28px;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .step-card p {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .step-card ul {
+            margin-left: 20px;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .step-card ul li {
+            margin-bottom: 5px;
+        }
+
+        /* Способы использования */
+        .cooking-methods {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .cooking-methods {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .method-card {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            border-top: 4px solid var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        }
+
+        .method-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--primary-color);
+        }
+
+        .method-card p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        /* Проверка готовности и хранение */
+        .tip-box {
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 25px 0;
+            border: 1px dashed var(--primary-color);
+        }
+
+        .tip-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--secondary-color);
+        }
+
+        /* Адаптивность для мобильных телефонов */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+            header p {
+                font-size: 0.95rem;
+            }
+            .step-card {
+                padding: 15px;
+            }
+            .step-title {
+                font-size: 1.1rem;
+                display: block;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+            .meta-item {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Как правильно сушить картофель</h1>
+        <p>Пошаговый рецепт заготовки в обычной духовке</p>
+    </header>
+
+    <div class="intro-box">
+        <strong>Важно:</strong> Никогда не сушите картофель сырым! Без предварительного проваривания (бланширования) крахмал окислится, картошка потемнеет и станет «стеклянной» — разварить её в будущем будет невозможно.
+    </div>
+
+    <div class="recipe-meta">
+        <div class="meta-item">
+            <div class="label">Подготовка</div>
+            <div class="value">20 мин</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">Сушка в духовке</div>
+            <div class="value">5–8 часов</div>
+        </div>
+        <div class="meta-item">
+            <div class="label">Температура</div>
+            <div class="value">65°C</div>
+        </div>
+    </div>
+
+    <h2>Процесс заготовки</h2>
+    <ul class="steps">
+        <li class="step-card">
+            <span class="step-num">1</span>
+            <span class="step-title">Нарезка и вымывание крахмала</span>
+            <p>Очистите картофель от кожуры и нарежьте его в зависимости от ваших целей:</p>
+            <ul>
+                <li><strong>Кубиками или брусочками</strong> (для супов) — толщиной 5–7 мм.</li>
+                <li><strong>Тонкими слайсами</strong> (для жарки) — толщиной 2–3 мм.</li>
+            </ul>
+            <p style="margin-top: 10px;">Замочите нарезанный картофель в холодной воде на 5 минут, после чего тщательно промойте, чтобы убрать лишний крахмал.</p>
+        </li>
+
+        <li class="step-card">
+            <span class="step-num">2</span>
+            <span class="step-title">Бланширование</span>
+            <p>Вскипятите воду и добавьте немного соли (1 ч. л. на литр). Опустите картофель в кипяток:</p>
+            <ul>
+                <li>Тонкие слайсы варите <strong>2–3 минуты</strong>.</li>
+                <li>Кубики и брусочки варите <strong>4–5 минут</strong>.</li>
+            </ul>
+            <p style="margin-top: 10px;"><em>Ориентир:</em> кусочки должны стать слегка прозрачными и размягчиться снаружи, но оставаться плотными внутри и не разваливаться.</p>
+        </li>
+
+        <li class="step-card">
+            <span class="step-num">3</span>
+            <span class="step-title">Охлаждение и обсушивание</span>
+            <p>Быстро достаньте картофель шумовкой и переложите в ледяную воду — это остановит процесс варки. Откиньте на дуршлаг, а затем разложите на полотенце. Перед духовкой кусочки должны быть абсолютно сухими снаружи.</p>
+        </li>
+
+        <li class="step-card">
+            <span class="step-num">4</span>
+            <span class="step-title">Сушка в духовке</span>
+            <p>Застелите противни пергаментом и разложите картофель в один слой, избегая сильного налипания кусочков друг на друга.</p>
+            <p>Поставьте в духовку, разогретую до <strong>65°C</strong> (желательно включить режим конвекции). <strong>Обязательно приоткройте дверцу духовки</strong> на толщину спичечного коробка, чтобы влажный воздух мог свободно выходить наружу.</p>
+        </li>
+    </ul>
+
+    <div class="tip-box">
+        <h4>Как проверить готовность?</h4>
+        <p>Готовый картофель становится твердым, как кость, полупрозрачным и издает звонкий сухой стук при падении. Он не должен гнуться или пружинить.</p>
+        <p style="margin-top: 10px;"><strong>Хранение:</strong> Храните полностью остывший картофель в герметичных стеклянных банках или зип-пакетах в сухом, темном месте.</p>
+    </div>
+
+    <h2>Как использовать сушеный картофель</h2>
+    <p style="color: var(--text-light); margin-bottom: 15px;">Перед приготовлением (особенно для жарки) картофель нужно «вернуть к жизни». Залейте его крутым кипятком в соотношении 1:3 (на 1 часть картошки 3 части воды) и оставьте на 20–30 минут, чтобы он впитал влагу и разбух.</p>
+    
+    <div class="cooking-methods">
+        <div class="method-card">
+            <h3>🥣 Как варить (в супе или пюре)</h3>
+            <p><strong>В походных условиях:</strong> предварительно замачивать не обязательно. Просто бросайте сушеную картошку в кипящий суп за 15–20 минут до окончания варки.</p>
+            <p style="margin-top: 10px;"><strong>Для пюре дома:</strong> залейте картофель водой, дайте набухнуть 25 минут, затем отварите в этой же воде до полной мягкости (около 15 минут) и разомните со сливочным маслом и молоком.</p>
+        </div>
+
+        <div class="method-card">
+            <h3>🍳 Как жарить</h3>
+            <p><strong>Важно:</strong> Жарить сухую картошку сразу на сковороде нельзя — она сгорит снаружи и останется жесткой.</p>
+            <p style="margin-top: 10px;"><strong>Инструкция:</strong> Обязательно замочите картофельные слайсы в кипятке на 25–30 минут. Когда они полностью расправятся и станут мягкими, откиньте их на дуршлаг и тщательно просушите бумажным полотенцем (чтобы масло не брызгало). Жарьте на раскаленной сковороде с растительным маслом, как обычный свежий картофель, до золотистой корочки.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>Удачных заготовок! Практичный и легкий стратегический запас готов.</p>
+    </footer>
+</div>
+
+</body>
+</html>
