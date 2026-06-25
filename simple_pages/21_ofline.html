@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Sublime Markdown Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.32.7/ext-language_tools.js"></script>
+    
+    <style>
+        body { margin: 0; background-color: #272822; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Верхняя панель для кнопок */
+        .toolbar {
+            background-color: #1e1f1c;
+            padding: 8px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #3e3d32;
+        }
+        
+        .toolbar button {
+            background-color: #75715e;
+            color: #f8f8f2;
+            border: none;
+            padding: 6px 12px;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        
+        .toolbar button:hover {
+            background-color: #a6e22e;
+            color: #272822;
+        }
+
+        #editor { flex-grow: 1; position: relative; font-size: 16px; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace; }
+        /* Стили для автодополнения */
+        .ace_editor.ace_autocomplete { background: #2f3129 !important; color: #f8f8f2 !important; border: 1px solid #75715e !important; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button onclick="openFile()">Открыть файл (Ctrl+O)</button>
+        <button onclick="saveFile()">Сохранить файл (Ctrl+S)</button>
+        <button onclick="exportSnippets()">Сохранить сниппеты</button>
+        <button onclick="importSnippetsClick()">Загрузить сниппеты</button>
+        <button onclick="calculateLine()" style="background-color: #3e3d32; border: 1px solid #a6e22e;">Посчитать (Ctrl+2)</button>
+    </div>
+
+    <input type="file" id="fileInput" style="display:none" onchange="loadFile(this)">
+    <input type="file" id="snippetInput" style="display:none" accept=".json" onchange="loadSnippets(this)">
+    
+    <div id="editor"></div>
+
+    <script>
+        var editor = ace.edit("editor");
+        var langTools = ace.require("ace/ext/language_tools");
+        var snippetManager = ace.require("ace/snippets").snippetManager;
+        
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/markdown");
+
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+            wrap: true,
+            indentedSoftWrap: true,
+            showPrintMargin: false,
+            useSoftTabs: true,
+            tabSize: 4
+        });
+
+        // Флаг для отслеживания типа копирования (как в Sublime)
+        var isFullLineCopy = false;
+
+        // Базовый сниппет по умолчанию
+        var defaultSnippetText = "Тип: ${1:Магазин}\nНазва: ${2:АТБ}${0}";
+
+        var currentSnippetText = localStorage.getItem("markdown_snippet_text") || defaultSnippetText;
+        var currentTrigger = localStorage.getItem("markdown_snippet_trigger") || "пп";
+
+        // --- 1. СНИППЕТЫ (Tab) ---
+        editor.commands.addCommand({
+            name: "expandCustomSnippet",
+            bindKey: {win: "Tab", mac: "Tab"},
+            exec: function(editor) {
+                if (editor.completer && editor.completer.activated) {
+                    editor.completer.insertMatch();
+                    return;
+                }
+                if (editor.tabstopManager && editor.tabstopManager.tabstops.length > 1) {
+                    return false; 
+                }
+
+                var cursor = editor.getCursorPosition();
+                var line = editor.session.getLine(cursor.row);
+                var textBeforeCursor = line.substring(0, cursor.column);
+                
+                if (textBeforeCursor.endsWith(currentTrigger)) {
+                    var range = editor.getSelectionRange();
+                    range.start.column = cursor.column - currentTrigger.length;
+                    range.end.column = cursor.column;
+                    editor.session.replace(range, ""); 
+
+                    snippetManager.insertSnippet(editor, currentSnippetText);
+                } else {
+                    editor.indent();
+                }
+            }
+        });
+
+        // --- 2. ФУНКЦИЯ КАЛЬКУЛЯТОРА (Ctrl + 2) ---
+        function calculateLine() {
+            var range = editor.getSelectionRange();
+            var text = "";
+            var isSelection = !range.isEmpty();
+
+            if (isSelection) {
+                text = editor.session.getTextRange(range);
+            } else {
+                var row = editor.getCursorPosition().row;
+                text = editor.session.getLine(row);
+            }
+
+            // Убираем уже имеющийся в конце ответ, если кликнули повторно
+            text = text.split("=")[0].trim();
+
+            if (!text) return;
+
+            // Заменяем запятые на точки для корректного вычисления в JS
+            var expression = text.replace(/,/g, '.');
+
+            try {
+                // Безопасно очищаем выражение от потенциально вредоносного JS-кода
+                // Разрешаем только цифры, математические знаки: +, -, *, /, **, %, ., (, ) и пробелы
+                var sanitized = expression.replace(/[^0-9+\-*/%().\s]/g, '');
+                
+                if (!sanitized.trim()) throw new Error("Empty");
+
+                // Вычисляем математическое выражение
+                var result = Function('"use strict"; return (' + sanitized + ')')();
+
+                if (typeof result === 'number' && !isNaN(result)) {
+                    // Округляем до 4 знаков после запятой, если число дробное
+                    if (result % 1 !== 0) {
+                        result = parseFloat(result.toFixed(4));
+                    }
+                    
+                    var outputText = text + "=" + result;
+
+                    if (isSelection) {
+                        editor.session.replace(range, outputText);
+                    } else {
+                        var currentRow = editor.getCursorPosition().row;
+                        var lineLength = editor.session.getLine(currentRow).length;
+                        editor.session.replace({
+                            start: {row: currentRow, column: 0},
+                            end: {row: currentRow, column: lineLength}
+                        }, outputText);
+                    }
+                }
+            } catch (e) {
+                console.log("Ошибка вычисления выражения: ", e);
+            }
+        }
+
+        // Регистрируем команду калькулятора в Ace
+        editor.commands.addCommand({
+            name: "calculateExpression",
+            bindKey: {win: "Ctrl-2", mac: "Command-2"},
+            exec: function(editor) {
+                calculateLine();
+            }
+        });
+
+        // --- 3. ПОВЕДЕНИЕ CTRL+C / CTRL+X / CTRL+V (SUBLIME STYLE) ---
+        
+        editor.commands.addCommand({
+            name: "copyLineOrSelection",
+            bindKey: {win: "Ctrl-C", mac: "Command-C"},
+            exec: function(editor) {
+                var range = editor.getSelectionRange();
+                if (range.isEmpty()) {
+                    isFullLineCopy = true;
+                    var row = editor.getCursorPosition().row;
+                    var lineContent = editor.session.getLine(row);
+                    editor.selection.setSelectionRange({
+                        start: {row: row, column: 0},
+                        end: {row: row, column: lineContent.length}
+                    });
+                    document.execCommand("copy");
+                    editor.selection.clearSelection();
+                } else {
+                    isFullLineCopy = false;
+                    document.execCommand("copy");
+                }
+            },
+            readOnly: true
+        });
+
+        editor.commands.addCommand({
+            name: "cutLineOrSelection",
+            bindKey: {win: "Ctrl-X", mac: "Command-X"},
+            exec: function(editor) {
+                var range = editor.getSelectionRange();
+                if (range.isEmpty()) {
+                    isFullLineCopy = true;
+                    var row = editor.getCursorPosition().row;
+                    editor.selection.setSelectionRange({
+                        start: {row: row, column: 0},
+                        end: {row: row + 1, column: 0}
+                    });
+                    document.execCommand("cut");
+                } else {
+                    isFullLineCopy = false;
+                    document.execCommand("cut");
+                }
+            }
+        });
+
+        editor.commands.addCommand({
+            name: "smartPaste",
+            bindKey: {win: "Ctrl-V", mac: "Command-V"},
+            exec: function(editor) {
+                if (isFullLineCopy) {
+                    var pos = editor.getCursorPosition();
+                    editor.session.insert({row: pos.row, column: 0}, "\n");
+                    editor.moveCursorTo(pos.row, 0);
+                    editor.execCommand("paste");
+                } else {
+                    editor.execCommand("paste");
+                }
+            }
+        });
+
+        // --- 4. ФАЙЛОВАЯ ЛОГИКА И СОХРАНЕНИЕ ---
+        
+        var savedContent = localStorage.getItem("markdown_buffer");
+        if (savedContent) {
+            editor.setValue(savedContent, 1);
+        }
+
+        editor.on("change", function() {
+            localStorage.setItem("markdown_buffer", editor.getValue());
+        });
+
+        function saveFile() {
+            var text = editor.getValue();
+            var blob = new Blob([text], { type: "text/plain" });
+            var a = document.createElement("a");
+            a.download = "note.md";
+            a.href = window.URL.createObjectURL(blob);
+            a.click();
+        }
+
+        function openFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function loadFile(input) {
+            var file = input.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function() {
+                editor.setValue(reader.result, 1);
+                input.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
+        // --- 5. ЭКСПОРТ И ИМПОРТ СНИППЕТОВ ---
+
+        function exportSnippets() {
+            var data = { 
+                trigger: currentTrigger,
+                snippet: currentSnippetText 
+            };
+            var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            var a = document.createElement("a");
+            a.download = "snippets.json";
+            a.href = window.URL.createObjectURL(blob);
+            a.click();
+        }
+
+        function importSnippetsClick() {
+            document.getElementById('snippetInput').click();
+        }
+
+        function loadSnippets(input) {
+            var file = input.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    var parsed = JSON.parse(reader.result);
+                    if (parsed && parsed.snippet) {
+                        currentSnippetText = parsed.snippet;
+                        currentTrigger = parsed.trigger || "пп";
+                        
+                        localStorage.setItem("markdown_snippet_text", currentSnippetText);
+                        localStorage.setItem("markdown_snippet_trigger", currentTrigger);
+                        
+                        alert("Сниппет успешно обновлен!\nАктивация по слову: '" + currentTrigger + "' + Tab");
+                    } else {
+                        alert("Некорректный формат файла сниппетов.");
+                    }
+                } catch(e) {
+                    alert("Ошибка при чтении JSON файла.");
+                }
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        // --- 6. ГОРЯЧИЕ КЛАВИШИ УПРАВЛЕНИЯ ---
+        
+        editor.commands.addCommand({
+            name: 'save', bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+            exec: function(editor) { saveFile(); }
+        });
+
+        editor.commands.addCommand({
+            name: 'open', bindKey: {win: 'Ctrl-O', mac: 'Command-O'},
+            exec: function(editor) { openFile(); }
+        });
+
+        // Блокируем стандартные браузерные действия для S, O и 2
+        window.addEventListener("keydown", function(e) {
+            if ((e.ctrlKey || e.metaKey) && (e.keyCode === 83 || e.keyCode === 79 || e.keyCode === 50)) {
+                e.preventDefault();
+            }
+        }, false);
+
+        console.log("Редактор обновлен. Калькулятор (Ctrl+2) успешно добавлен.");
+    </script>
+</body>
+</html>
